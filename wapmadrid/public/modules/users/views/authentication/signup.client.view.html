@@ -1,0 +1,54 @@
+<section class="row" data-ng-controller="AuthenticationController">
+    <div class="col-xs-offset-1 col-xs-10 col-md-offset-4 col-md-4 login-form-bg">
+        <h3 class="text-center">Registro</h3>
+        <form name="userForm" data-ng-submit="signup()" class="signin form-horizontal" novalidate autocomplete="off">
+            <fieldset>
+                <div class="form-group">
+                    <div data-ng-show="error" class="text-center text-danger">
+                        <div class="alert alert-danger" role="alert"><strong data-ng-bind="error"></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="basic-addon1"><i class="text-muted glyphicon glyphicon-plus"></i></span>
+                        <input type="text" required id="name" name="name" class="form-control" data-ng-model="credentials.name" placeholder="Nombre del centro">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="basic-addon1"><i class="text-muted glyphicon glyphicon-user"></i></span>
+                        <input type="text" id="username" name="username" class="form-control" data-ng-model="credentials.username" placeholder="Nombre de usuario">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="basic-addon1"><i class="text-muted glyphicon glyphicon-asterisk"></i></span>
+                        <input type="password" id="password" name="password" class="form-control" data-ng-model="credentials.password" placeholder="Contraseña">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="basic-addon1"><i class="text-muted glyphicon glyphicon-map-marker"></i></span>
+                        <input type="text" id="address" name="address" class="form-control" data-ng-model="credentials.address" placeholder="Dirección del centro">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="basic-addon1"><i class="text-muted glyphicon glyphicon-phone-alt"></i></span>
+                        <input type="text" id="telephone" name="telephone" class="form-control" data-ng-model="credentials.telephone" placeholder="Teléfono del centro">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon" id="basic-addon1"><i class="text-muted glyphicon glyphicon-time"></i></span>
+                        <input type="text" id="openingHours" name="openingHours" class="form-control" data-ng-model="credentials.openingHours" placeholder="Horario de atención al cliente">
+                    </div>
+                </div>
+                <div class="text-center form-group">
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Registrar</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</section>
