@@ -3969,6 +3969,14 @@ a:focus {
     padding-left: 10px;
 }
 
+.sectiontitle h3 {
+    background: #111;
+    display: inline;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: #f15900;
+}
+
 .centersectiontitle {
     background: url(../img/dots.gif) repeat-x scroll 0 0 transparent;
     background-position: center;
