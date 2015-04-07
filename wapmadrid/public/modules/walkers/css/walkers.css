@@ -24,9 +24,13 @@
 }
 
 .listBoxName {
-    background-color: #f15900;
+    background-color: #111;
     border-radius: 0px;
     padding: 2px;
+}
+
+.listBoxName h4 {
+    color: #f15900;
 }
 
 .listBoxUser {
