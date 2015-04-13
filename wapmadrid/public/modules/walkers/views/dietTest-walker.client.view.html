@@ -1,12 +1,12 @@
-<section data-ng-controller="WalkersController as walkersCtrl">
-    <form>
+<section data-ng-controller="WalkersController">
+    <form class="" data-ng-submit="" novalidate>
         <fieldset>
             <div class="sectiontitle">
-                <h3>Editar wappy</h3>
+                <h3>Cuestionario de dieta mediterranea</h3>
             </div>
             <p class="slide"></p>
             <div class="row wappyRegistrarRow">
-                <div class="col-sm-6 col-md-4 wappyRegistrarDiv">
+                <div class="col-sm-6 col-md-3 wappyRegistrarDiv">
                     <h4 class="wappyTitulo">Información general</h4>
                 </div>
             </div>
@@ -83,7 +83,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="text-center form-group">
-                        <button ng-click="walkersCtrl.update(walker);ok()" class="iniciarSesionBtn btn btn-lg btn-block">Guardar</button>
+                        <button type="submit" class="iniciarSesionBtn btn btn-lg btn-block">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -110,7 +110,7 @@
             <p class="slide"></p>
             <div class="row wappyRegistrarRow">
                 <div class="col-md-6 wappyRegistrarDiv">
-                    <h4 class="wappyTitulo">Cuestionario de actividad física</h4>
+                    <h4 class="wappyTitulo">Cuestionario internacional de actividad física</h4>
                 </div>
             </div>
             </br>
@@ -123,15 +123,8 @@
             </br>
             <p class="slide"></p>
             <div class="row wappyRegistrarRow">
-                <div class="col-md-6 wappyRegistrarDiv">
-                    <h4 class="wappyTitulo">Cuestionario de dieta mediterránea</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-offset-9">
-                    <div class="text-center form-group">
-                        <button ng-click="cancel()" class="iniciarSesionBtn btn btn-lg btn-block">Cancelar</button>
-                    </div>
+                <div class="col-md-7 wappyRegistrarDiv">
+                    <h4 class="wappyTitulo">Cuestionario cumplimiento de la dieta mediterránea</h4>
                 </div>
             </div>
         </fieldset>

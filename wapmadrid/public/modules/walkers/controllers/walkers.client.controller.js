@@ -16,20 +16,52 @@ angular.module('walkers').controller('WalkersController', ['$scope', '$http', '$
         };
 
         // Update existing Walker
-        $scope.update = function() {
-            var walker = $scope.walker;
-
-            walker.$update(function() {
-                $location.path('walkers/' + walker._id);
-            }, function(errorResponse) {
-                $scope.error = errorResponse.data.message;
+        $scope.update = function(updatedWalker) {
+            $http.put('/walkers/:' + updatedWalker._id, $scope.walker).success(function(response) {
+                // And redirect to the index page
+            }).error(function(response) {
+                $scope.error = response.message;
             });
+            /*var walker = updatedWalker;
+
+            walker.$update(function() {}, function(errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });*/
         };
 
         $scope.modalUpdate = function(size, selectedWalker) {
 
             var modalInstance = $modal.open({
                 templateUrl: 'modules/walkers/views/edit-walker.client.view.html',
+                controller: function($scope, $modalInstance, walker) {
+                    $scope.walker = walker;
+                    $scope.ok = function() {
+                        $modalInstance.close($scope.walker);
+                    };
+
+                    $scope.cancel = function() {
+                        $modalInstance.dismiss('cancel');
+                    };
+                },
+                size: size,
+                resolve: {
+                    walker: function() {
+                        return selectedWalker;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(selectedItem) {
+                $scope.selected = selectedItem;
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        $scope.modalExerciseTest = function(size, selectedWalker) {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'modules/walkers/views/exerciseTest-walker.client.view.html',
                 controller: function($scope, $modalInstance, walker) {
                     $scope.walker = walker;
                 },
@@ -48,6 +80,27 @@ angular.module('walkers').controller('WalkersController', ['$scope', '$http', '$
             });
         };
 
+        $scope.modalDietTest = function(size, selectedWalker) {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'modules/walkers/views/dietTest-walker.client.view.html',
+                controller: function($scope, $modalInstance, walker) {
+                    $scope.walker = walker;
+                },
+                size: size,
+                resolve: {
+                    walker: function() {
+                        return selectedWalker;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(selectedItem) {
+                $scope.selected = selectedItem;
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
         /*$scope.updateWalker = function(isValid) {
             if (isValid) {
                 $scope.success = $scope.error = null;

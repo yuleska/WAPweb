@@ -85,7 +85,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="text-center form-group">
-                            <button type="submit" class="iniciarSesionBtn btn btn-lg btn-block">Guardar</button>
+                            <button id="saveWappy" type="submit" class="iniciarSesionBtn btn btn-lg btn-block">Guardar</button>
                         </div>
                     </div>
                 </div>
@@ -96,6 +96,54 @@
                     </div>
                 </div>
                 </br>
+                <div class="row press btnRoute">
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="Arganzuela">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="Ciudad lineal">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="NS - EO">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="San blas">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="Trasera">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="Usera">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="Vallecas">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="Vicálvaro">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="form-group">
+                            <input type="button" value="Villaverde">
+                        </div>
+                    </div>
+                </div>
+                </br>
                 <p class="slide"></p>
                 <div class="row wappyRegistrarRow">
                     <div class="col-md-2 wappyRegistrarDiv">
@@ -103,24 +151,35 @@
                     </div>
                 </div>
                 </br>
-                <p class="slide"></p>
-                <div class="row wappyRegistrarRow">
-                    <div class="col-md-6 wappyRegistrarDiv">
-                        <h4 class="wappyTitulo">Cuestionario internacional de actividad física</h4>
+                <div class="row">
+                    <div class="col-sm-6 col-sm-push-6">
+                        <div class="form-group"></div>
                     </div>
                 </div>
-                </br>
+                <p class="slide"></p>
+                <div class="row wappyRegistrarRow">
+                    <div class="col-md-5 wappyRegistrarDiv">
+                        <h4 class="wappyTitulo">Cuestionario de actividad física</h4>
+                    </div>
+                </div>
                 <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
+                    <div class="col-md-3 col-md-offset-9">
+                        <div class="text-center form-group">
+                            <a id="testSport" type="button" ng-click="modalExerciseTest('lg',walker)" class="iniciarSesionBtn btn btn-lg btn-block">Iniciar Test</a>
                         </div>
                     </div>
                 </div>
-                </br>
                 <p class="slide"></p>
                 <div class="row wappyRegistrarRow">
-                    <div class="col-md-7 wappyRegistrarDiv">
-                        <h4 class="wappyTitulo">Cuestionario cumplimiento de la dieta mediterránea</h4>
+                    <div class="col-md-5 wappyRegistrarDiv">
+                        <h4 class="wappyTitulo">Cuestionario de dieta mediterránea</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-9">
+                        <div class="text-center form-group">
+                            <a id="testDiet" type="button" ng-click="modalDietTest('lg',walker)" class="iniciarSesionBtn btn btn-lg btn-block">Iniciar Test</a>
+                        </div>
                     </div>
                 </div>
             </fieldset>
