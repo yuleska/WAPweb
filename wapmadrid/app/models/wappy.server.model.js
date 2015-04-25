@@ -22,13 +22,10 @@ var validateLocalStrategyPassword = function(password) {
 };
 
 /**
- * Walker Schema
+ * Wappy Schema
  */
-var WalkerSchema = new Schema({
-    profileImage:{
-        type: String,
-    }
-    ,firstName: {
+var WappySchema = new Schema({
+    firstName: {
         type: String,
         trim: true,
         default: '',
@@ -60,14 +57,14 @@ var WalkerSchema = new Schema({
     email: {
         type: String,
         trim: true,
-        unique: 'Direccion de correo en uso',
+        unique: 'testing error message',
         default: '',
         validate: [validateLocalStrategyProperty, 'Please fill in your email'],
         match: [/.+\@.+\..+/, 'Please fill a valid email address']
     },
     username: {
         type: String,
-        unique: 'Nombre de usuario en uso',
+        unique: 'testing error message',
         required: 'Please fill in a username',
         trim: true
     },
@@ -108,6 +105,7 @@ var WalkerSchema = new Schema({
     resetPasswordExpires: {
         type: Date
     },
+    /*FALTA : height, weight, smoker, alcohol, diet, exercise, stats, groups, routes*/
     weight: [{
         value: {
             type: Number
@@ -163,7 +161,7 @@ var WalkerSchema = new Schema({
         }
     }],
     exercise: [{
-        value: {
+        avalue: {
             type: Number
         },
         date: {
@@ -174,22 +172,27 @@ var WalkerSchema = new Schema({
     user: {
         type: Schema.ObjectId,
         ref: 'User'
-    },
-    friends:[{
-        friendID: {
-            type: Schema.ObjectId,
-            ref: 'Walker'
-        }
-    }]
+    }
 });
 
+/**
+ * Hook a pre save method to hash the password
+ */
+WappySchema.pre('save', function(next) {
+    if (this.password && this.password.length > 6) {
+        this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+        this.password = this.hashPassword(this.password);
+    }
+
+    next();
+});
 
 /**
  * Create instance method for hashing a password
  */
-WalkerSchema.methods.hashPassword = function(password,salt) {
-    if (salt && password) {
-        return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+WappySchema.methods.hashPassword = function(password) {
+    if (this.salt && password) {
+        return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
     } else {
         return password;
     }
@@ -198,14 +201,14 @@ WalkerSchema.methods.hashPassword = function(password,salt) {
 /**
  * Create instance method for authenticating user
  */
-WalkerSchema.methods.authenticate = function(password) {
-    return this.password === this.hashPassword(password,this.salt);
+WappySchema.methods.authenticate = function(password) {
+    return this.password === this.hashPassword(password);
 };
 
 /**
  * Find possible not used username
  */
-WalkerSchema.statics.findUniqueUsername = function(username, suffix, callback) {
+WappySchema.statics.findUniqueUsername = function(username, suffix, callback) {
     var _this = this;
     var possibleUsername = username + (suffix || '');
 
@@ -224,4 +227,4 @@ WalkerSchema.statics.findUniqueUsername = function(username, suffix, callback) {
     });
 };
 
-mongoose.model('Walker', WalkerSchema);
+mongoose.model('Wappy', WappySchema);

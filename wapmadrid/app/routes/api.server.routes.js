@@ -1,0 +1,57 @@
+'use strict';
+
+var passport = require('passport');
+
+module.exports = function(app) {
+
+	var users = require('../../app/controllers/users.server.controller');
+    var walkers = require('../../app/controllers/walkers.api.server.controller');
+
+    // Walkers Routes
+    app.route('/api/walkers')
+        .get(walkers.list);
+
+    
+
+    app.route('/api/walkers/register')
+        .post(walkers.register);
+
+    app.route('/api/walkers/login')
+        .post(walkers.login);
+
+    app.route('/api/walkers/logout/:id')
+        .post(walkers.logout);
+
+    app.route('/api/walkers/read/:id')
+        .post(walkers.read);
+
+    app.route('/api/walkers/update/info/:id')
+        .post(walkers.updateInfo);
+
+    app.route('/api/walkers/update/password/:id')
+        .post(walkers.updatePassword);
+
+    app.route('/api/walkers/update/status/:id')
+        .post(walkers.updateStatus);
+
+    app.route('/api/walkers/update/diet/:id')
+        .post(walkers.updateDiet);
+
+    app.route('/api/walkers/update/exercise/:id')
+        .post(walkers.updateExercise);
+
+    app.route('/api/walkers/cms/:id')
+        .post(walkers.getCms);
+
+    app.route('/api/walkers/cms/:id')
+        .put(walkers.setCms);
+        
+    app.route('/api/walkers/groups/:id')
+        .post(walkers.getGroups);
+
+    app.route('/api/walkers/groups/:id')
+        .put(walkers.setGroup);
+    
+    // Finish by binding the Wappy middleware
+  /*  app.param('wappyId', walkers.wappyByID);*/
+};

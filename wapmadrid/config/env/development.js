@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    db: 'mongodb://wapmadrid:wappassword@ds031691.mongolab.com:31691/wapmadrid',
+    db: 'mongodb://localhost/wapmadrid',
     app: {
         title: 'wapmadrid - Development Environment'
     },
