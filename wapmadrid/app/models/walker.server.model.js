@@ -131,6 +131,11 @@ var WalkerSchema = new Schema({
         groupID: {
             type: Schema.ObjectId,
             ref: 'Group'
+        },
+        rol: {
+            type: String,
+            enum: ['capitan', 'usuario'],
+            default: ['usuario']
         }
     }],
     routes: [{

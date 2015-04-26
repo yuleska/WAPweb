@@ -11,8 +11,6 @@ module.exports = function(app) {
     app.route('/api/walkers')
         .get(walkers.list);
 
-    
-
     app.route('/api/walkers/register')
         .post(walkers.register);
 

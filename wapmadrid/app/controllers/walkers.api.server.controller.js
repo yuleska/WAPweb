@@ -11,6 +11,8 @@
     crypto = require('crypto'),
     Walker = mongoose.model('Walker'),
     User = mongoose.model('User'),
+    Group = mongoose.model('Group'),
+    Route = mongoose.model('Route'),
     utils = require('./utils.js');
 
 
@@ -407,6 +409,7 @@ exports.setGroup = function(req, res) {
             return res.status(200).jsonp(checkCredentials);
         var group = {};
         group.groupID = req.body.group;
+        group.rol = req.body.rol;
         walker.groups.push(group);
         walker.save(function(err) {
             if (err) {
