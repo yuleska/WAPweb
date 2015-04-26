@@ -40,6 +40,9 @@ module.exports = function(app) {
     app.route('/api/walkers/update/exercise/:id')
         .post(walkers.updateExercise);
 
+    app.route('/api/walkers/upload/stats/:id')
+        .post(walkers.uploadStats);
+
     app.route('/api/walkers/cms/:id')
         .post(walkers.getCms);
 
@@ -51,6 +54,22 @@ module.exports = function(app) {
 
     app.route('/api/walkers/groups/:id')
         .put(walkers.setGroup);
+
+    app.route('/api/walkers/groups/:id')
+        .delete(walkers.deleteGroup);
+
+    app.route('/api/walkers/friends/:id')
+        .post(walkers.getFriends);
+
+    app.route('/api/walkers/friends/:id')
+        .put(walkers.setFriends);
+
+    app.route('/api/walkers/friends/response/:id')
+        .post(walkers.responseFriendRequest);
+
+    app.route('/api/walkers/friends/:id')
+        .delete(walkers.deleteFriend);
+
     
     // Finish by binding the Wappy middleware
   /*  app.param('wappyId', walkers.wappyByID);*/

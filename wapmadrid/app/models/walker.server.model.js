@@ -88,11 +88,9 @@ var WalkerSchema = new Schema({
     providerData: {},
     additionalProvidersData: {},
     roles: {
-        type: [{
-            type: String,
-            enum: ['user', 'admin']
-        }],
-        default: ['user']
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     },
     updated: {
         type: Date
@@ -179,6 +177,11 @@ var WalkerSchema = new Schema({
         friendID: {
             type: Schema.ObjectId,
             ref: 'Walker'
+        },
+        state: {
+            type: String,
+            enum: ['pending', 'request', 'accepted'],
+            default: ['pending']
         }
     }]
 });

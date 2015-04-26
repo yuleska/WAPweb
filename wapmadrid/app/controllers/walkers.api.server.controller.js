@@ -59,7 +59,23 @@ exports.read = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-
+        var ret = {};
+        ret.profileImage = walker.profileImage;
+        ret.firstName = walker.firstName;
+        ret.lastName = walker.lastName;
+        ret.sex = walker.sex;
+        ret.birthDate = walker.birthDate;
+        ret.email = walker.email;
+        ret.telephone = walker.telephone;
+        ret.weight = walker.weight;
+        ret.height = walker.height;
+        ret.smoker = walker.smoker;
+        ret.alcohol = walker.alcohol;
+        ret.diet = walker.diet;
+        ret.exercise = walker.exercise;
+        ret.stats = walker.stats;
+        ret.error = 0;
+        return res.status(200).jsonp(ret); 
     });
 };
 
@@ -127,6 +143,7 @@ exports.updateInfo = function(req, res) {
         walker.email = req.body.email;
         walker.sex = req.body.sex;
         walker.telephone = req.body.telephone;
+        walker.profileImage = req.body.profileImage;
         walker.displayName = req.body.firstName + " " + req.body.lastName;
         walker.save(function(err) {
             if (err) {
@@ -251,6 +268,29 @@ exports.updateExercise = function(req, res) {
     });
 };
 
+exports.uploadStats = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var stats = {};
+        stats.distance = req.body.distance;
+        stats.kcal = req.body.kcal;
+        walker.stats.push(stats);
+        walker.save(function(err) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+
+    });
+};
 /**
  * List of walkers
  */
@@ -332,6 +372,35 @@ exports.getGroups = function(req, res) {
     }); 
 };
 
+exports.deleteGroup = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var request  = walker.groups.id(req.body.id);
+        if (!request){
+            var ret = {};
+            ret.error = 2;
+            ret.error_message = err;
+            return res.status(200).jsonp(ret);  
+        } 
+        walker.groups.id(req.body.id).remove();
+        walker.save(function(err) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                // Delete walker from group
+                var ret = {};
+                ret.error = 0;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+
+    }); 
+};
+
 exports.setGroup = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
@@ -353,3 +422,164 @@ exports.setGroup = function(req, res) {
         });
     }); 
 };
+
+exports.getFriends = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var query = Walker.findById(walker._id).populate('friends.friendID', 'profileImage displayName _id roles.type');
+        query.exec(function (err, friends) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                ret.friends = friends.friends;
+                return res.status(200).jsonp(ret);  
+            }
+        }); 
+    }); 
+};
+
+exports.setFriends = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var friend = {};
+        friend.friendID = req.body.friend;
+        friend.state = 'pending';
+        walker.friends.push(friend);
+        var ret = {};
+        walker.save(function(err) {
+            if (err) {
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                ret.error = 0;
+                Walker.findById(req.body.friend, function(err, walkerFriend) {
+                    var friend = {};
+                    friend.friendID = walker._id;
+                    friend.state = 'request';
+                    walkerFriend.friends.push(friend);
+                    walkerFriend.save(); 
+                });
+                return res.status(200).jsonp(ret);  
+            }
+        });
+    }); 
+};
+
+exports.responseFriendRequest = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        if (req.body.response == "true"){            
+            var request  = walker.friends.id(req.body.id);
+            if (!request){
+                var ret = {};
+                ret.error = 2;
+                return res.status(200).jsonp(ret);  
+            }
+            walker.friends.id(req.body.id).state = "accepted";
+            var ret = {};
+            walker.save(function(err) {
+                if (err) {
+                    ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    ret.error = 0;
+                    Walker.findById(walker.friends.id(req.body.id).friendID, function(err, walkerFriend) {
+                        var found = false;
+                        var i;
+                        for (i = 0 ; i < walkerFriend.friends.length && !found; i++){
+                            var id = walkerFriend.friends[i].friendID;
+                            if (id.equals(walker._id)){
+                                walkerFriend.friends[i].state = "accepted";
+                                walkerFriend.save();
+                                found = true;
+                            }
+                        }
+                    });
+                    return res.status(200).jsonp(ret);  
+                }
+            });
+        } else if (req.body.response == "false"){  
+            var request  = walker.friends.id(req.body.id);
+            if (!request){
+                var ret = {};
+                ret.error = 2;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } 
+            walker.friends.id(req.body.id).remove();
+            var ret = {};
+            walker.save(function(err) {
+                if (err) {
+                    ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    ret.error = 0;
+                    Walker.findById(req.body.friendID, function(err, walkerFriend) {
+                        var found = false;
+                        var i;
+                        for (i = 0 ; i < walkerFriend.friends.length && !found; i++){
+                            var id = walkerFriend.friends[i].friendID;
+                            if (id.equals(walker._id)){
+                                walkerFriend.friends.id(walkerFriend.friends[i]._id).remove();
+                                walkerFriend.save();
+                                found = true;
+                            }
+                        }
+                    });
+                    return res.status(200).jsonp(ret);  
+                }
+            });
+        }
+    }); 
+};
+
+exports.deleteFriend = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+            var request  = walker.friends.id(req.body.id);
+            if (!request){
+                var ret = {};
+                ret.error = 2;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            }
+            walker.friends.id(req.body.id).remove();
+            var ret = {};
+            walker.save(function(err) {
+                if (err) {
+                    ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    ret.error = 0;
+                    Walker.findById(req.body.friendID, function(err, walkerFriend) {
+                        var found = false;
+                        var i;
+                        for (i = 0 ; i < walkerFriend.friends.length && !found; i++){
+                            var id = walkerFriend.friends[i].friendID;
+                            if (id.equals(walker._id)){
+                                walkerFriend.friends.id(walkerFriend.friends[i]._id).remove();
+                                walkerFriend.save();
+                                found = true;
+                            }
+                        }
+                    });
+                    return res.status(200).jsonp(ret);  
+                }
+            });
+    }); 
+};
+
+
