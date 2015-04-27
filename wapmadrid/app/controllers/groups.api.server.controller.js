@@ -123,6 +123,127 @@ exports.responseJoinRequest = function(req, res) {
                 ret.error_message = "Miembro no encontrado";
                 return res.status(200).jsonp(ret);  
             }
+            var idMember  = group.members.id(req.body.id).idMember;
+            Walker.findById(idMember,function(err, walkerRequest) {
+                var found = false;
+                var i;
+                for (i = 0 ; i < walkerRequest.groups.length && !found; i++){
+                    var id = walkerRequest.groups[i].groupID;
+                    if (id.equals(group._id)){
+                        found = true;
+                    }
+                }
+                if (found && req.body.response == "true"){ 
+                    group.members.id(req.body.id).accepted = true;
+                    walkerRequest.groups.id(walkerRequest.groups[i]._id).accepted = true;
+                } else if ( found && req.body.response == "false"){  
+                    group.members.id(req.body.id).remove();
+                    walkerRequest.groups.id(walkerRequest.groups[i]._id).remove();
+                } else if (!found){
+                    ret.error = 6;
+                    ret.error_message = "El usuario no pertenece al grupo";
+                    return res.status(200).jsonp(ret);  
+                }
+                group.save(function(err) {
+                    if (err) {
+                        var ret = {};
+                        ret.error = 7;
+                        ret.error_message = err;
+                        return res.status(200).jsonp(ret);  
+                    } else {
+                        walkerRequest.save(function(err) {
+                            if (err) {
+                                var ret = {};
+                                ret.error = 8;
+                                ret.error_message = err;
+                                return res.status(200).jsonp(ret);  
+                            } else {
+                                var ret = {};
+                                ret.error = 0;
+                                return res.status(200).jsonp(ret);  
+                            }
+                        });
+                    }
+                });
+            });
+           
+        });
+    }); 
+};
+
+exports.expulseFromGroup = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        Group.findById(req.body.groupID, function(err, group) {
+            if (!walker._id.equals(group.captain)){
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = "No tienes permiso para esta operacion";
+                return res.status(200).jsonp(ret);  
+            }
+            var request  = group.members.id(req.body.id);
+            if (!request){
+                ret.error = 5;
+                ret.error_message = "Miembro no encontrado";
+                return res.status(200).jsonp(ret);  
+            }
+            var idMember  = group.members.id(req.body.id).idMember;
+            Walker.findById(idMember,function(err, walkerRequest) {
+                var found = false;
+                var i;
+                for (i = 0 ; i < walkerRequest.groups.length && !found; i++){
+                    var id = walkerRequest.groups[i].groupID;
+                    if (id.equals(group._id)){
+                        found = true;
+                    }
+                }
+                if (found){  
+                    group.members.id(req.body.id).remove();
+                    walkerRequest.groups.id(walkerRequest.groups[i]._id).remove();
+                } else if (!found){
+                    ret.error = 6;
+                    ret.error_message = "El usuario no pertenece al grupo";
+                    return res.status(200).jsonp(ret);  
+                }
+                group.save(function(err) {
+                    if (err) {
+                        var ret = {};
+                        ret.error = 7;
+                        ret.error_message = err;
+                        return res.status(200).jsonp(ret);  
+                    } else {
+                        walkerRequest.save(function(err) {
+                            if (err) {
+                                var ret = {};
+                                ret.error = 8;
+                                ret.error_message = err;
+                                return res.status(200).jsonp(ret);  
+                            } else {
+                                var ret = {};
+                                ret.error = 0;
+                                return res.status(200).jsonp(ret);  
+                            }
+                        });
+                    }
+                });
+            });
+           
+        });
+    }); 
+};
+
+exports.leaveGroup = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        Group.findById(req.body.groupID, function(err, group) {
+            var request  = group.members.id(req.body.id);
+            if (!request){
+                ret.error = 5;
+                ret.error_message = "Miembro no encontrado";
+                return res.status(200).jsonp(ret);  
+            }
             var found = false;
             var i;
             for (i = 0 ; i < walker.groups.length && !found; i++){
@@ -131,10 +252,7 @@ exports.responseJoinRequest = function(req, res) {
                     found = true;
                 }
             }
-            if (found && req.body.response == "true"){ 
-                group.members.id(req.body.id).accepted = true;
-                walker.groups.id(walker.groups[i]._id).accepted = true;
-            } else if ( found && req.body.response == "false"){  
+            if (found){  
                 group.members.id(req.body.id).remove();
                 walker.groups.id(walker.groups[i]._id).remove();
             } else if (!found){
@@ -164,44 +282,6 @@ exports.responseJoinRequest = function(req, res) {
                 }
             });
         });
-    }); 
-};
-
-exports.deleteFriend = function(req, res) {
-    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
-        if (checkCredentials.error != "0")
-            return res.status(200).jsonp(checkCredentials);
-            var request  = walker.friends.id(req.body.id);
-            if (!request){
-                var ret = {};
-                ret.error = 2;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);  
-            }
-            walker.friends.id(req.body.id).remove();
-            var ret = {};
-            walker.save(function(err) {
-                if (err) {
-                    ret.error = 1;
-                    ret.error_message = err;
-                    return res.status(200).jsonp(ret);  
-                } else {
-                    ret.error = 0;
-                    Walker.findById(req.body.friendID, function(err, walkerFriend) {
-                        var found = false;
-                        var i;
-                        for (i = 0 ; i < walkerFriend.friends.length && !found; i++){
-                            var id = walkerFriend.friends[i].friendID;
-                            if (id.equals(walker._id)){
-                                walkerFriend.friends.id(walkerFriend.friends[i]._id).remove();
-                                walkerFriend.save();
-                                found = true;
-                            }
-                        }
-                    });
-                    return res.status(200).jsonp(ret);  
-                }
-            });
     }); 
 };
 

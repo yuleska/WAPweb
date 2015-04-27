@@ -75,6 +75,9 @@ module.exports = function(app) {
 
     app.route('/api/groups/join/response/:id')
         .post(groups.responseJoinRequest);
+
+    app.route('/api/groups/leave/:id')
+        .post(groups.leaveGroup);
     // Finish by binding the Wappy middleware
   /*  app.param('wappyId', walkers.wappyByID);*/
 };
