@@ -10,6 +10,9 @@ var mongoose = require('mongoose'),
  * Group Schema
  */
 var GroupSchema = new Schema({
+    image:{
+        type: String
+    },
     name: {
         type: String,
         default: '',

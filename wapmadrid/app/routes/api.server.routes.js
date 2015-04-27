@@ -6,6 +6,7 @@ module.exports = function(app) {
 
 	var users = require('../../app/controllers/users.server.controller');
     var walkers = require('../../app/controllers/walkers.api.server.controller');
+    var groups = require('../../app/controllers/groups.api.server.controller');
 
     // Walkers Routes
     app.route('/api/walkers')
@@ -68,7 +69,9 @@ module.exports = function(app) {
     app.route('/api/walkers/friends/:id')
         .delete(walkers.deleteFriend);
 
-    
+    // Groups Management Routes
+    app.route('/api/groups/:id')
+        .put(groups.create);
     // Finish by binding the Wappy middleware
   /*  app.param('wappyId', walkers.wappyByID);*/
 };

@@ -19,46 +19,41 @@
 /**
  * Register Walker
  */
-exports.register = function(req, res) {
-    var query = Walker.findOne({ 'username': req.body.username });
-    query.exec(function (err, duplicate) {
-        if (duplicate){
-            var ret = {};
-            ret.error = 1;
-            ret.error_message = "Nombre de wappy en uso";
-            return res.status(200).jsonp(ret);  
-        }
-    	var walker = new Walker(req.body);	
-        var token = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
-        token = crypto.pbkdf2Sync(token, token, 10000, 64).toString('base64');
-        var password = req.body.password;
-        if (password && password.length > 6) {
-            var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
-            salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
-            walker.password = walker.hashPassword(password,salt);
-            walker.salt = salt;
-            walker.token = token;
-            walker.displayName = req.body.firstName + " " + req.body.lastName;
-        	walker.save(function(err) {
+exports.create = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var group = new Group(req.body);
+        var members = {};
+        group.captain = walker._id;
+        members.idMember  = walker._id;
+        members.accepted = true;
+        group.members.push(members);
+        group.save(function(err) {
                 if (err) {
                     var ret = {};
-                	ret.error = err.code;
-                	ret.error_message = err;
-                    return res.status(200).jsonp(ret);	
+                    ret.error = 4;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
                 } else {
-                	var ret = {};
-                    ret.token = walker.token;
-                    ret._id = walker._id;
-                	ret.error = 0;
-                    return res.status(200).jsonp(ret);	
+                    var group = {};
+                    group.groupID = group._id;
+                    group.roles = "captain";
+                    walker.groups.push(group);
+                    walker.save(function(err) {
+                        if (err) {
+                            var ret = {};
+                            ret.error = 5;
+                            ret.error_message = err;
+                            return res.status(200).jsonp(ret);  
+                        } else {
+                            var ret = {};
+                            ret.error = 0;
+                            return res.status(200).jsonp(ret);  
+                        }
+                    });
                 }
             });
-        } else {
-            var ret = {};
-            ret.error = 2;
-            ret.error_message = "Password demasiado corta";
-            return res.status(200).jsonp(ret);  
-        }
     });
 };
 

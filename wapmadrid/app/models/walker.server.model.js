@@ -134,8 +134,8 @@ var WalkerSchema = new Schema({
         },
         rol: {
             type: String,
-            enum: ['capitan', 'usuario'],
-            default: ['usuario']
+            enum: ['captain', 'user'],
+            default: ['user']
         }
     }],
     routes: [{
