@@ -52,9 +52,6 @@ module.exports = function(app) {
         .post(walkers.getGroups);
 
     app.route('/api/walkers/groups/:id')
-        .put(walkers.setGroup);
-
-    app.route('/api/walkers/groups/:id')
         .delete(walkers.deleteGroup);
 
     app.route('/api/walkers/friends/:id')
@@ -76,6 +73,8 @@ module.exports = function(app) {
     app.route('/api/groups/join/:id')
         .post(groups.join);
 
+    app.route('/api/groups/join/response/:id')
+        .post(groups.responseJoinRequest);
     // Finish by binding the Wappy middleware
   /*  app.param('wappyId', walkers.wappyByID);*/
 };
