@@ -70,8 +70,12 @@ module.exports = function(app) {
         .delete(walkers.deleteFriend);
 
     // Groups Management Routes
-    app.route('/api/groups/:id')
-        .put(groups.create);
+    app.route('/api/groups/create/:id')
+        .post(groups.create);
+
+    app.route('/api/groups/join/:id')
+        .post(groups.join);
+
     // Finish by binding the Wappy middleware
   /*  app.param('wappyId', walkers.wappyByID);*/
 };

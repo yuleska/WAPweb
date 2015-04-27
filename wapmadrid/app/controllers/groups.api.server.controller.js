@@ -60,27 +60,48 @@ exports.create = function(req, res) {
 /**
  * Login Walker
  */
-exports.read = function(req, res) {
+exports.join = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var ret = {};
-        ret.profileImage = walker.profileImage;
-        ret.firstName = walker.firstName;
-        ret.lastName = walker.lastName;
-        ret.sex = walker.sex;
-        ret.birthDate = walker.birthDate;
-        ret.email = walker.email;
-        ret.telephone = walker.telephone;
-        ret.weight = walker.weight;
-        ret.height = walker.height;
-        ret.smoker = walker.smoker;
-        ret.alcohol = walker.alcohol;
-        ret.diet = walker.diet;
-        ret.exercise = walker.exercise;
-        ret.stats = walker.stats;
-        ret.error = 0;
-        return res.status(200).jsonp(ret); 
+        Group.findById(req.body.groupID, function(err, group) {
+            if (alreadyMember(group.members,req.params.id)){
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = "Ya es miembro de este grupo";
+                return res.status(200).jsonp(ret);  
+            } else {
+                var members = {};
+                members.idMember  = walker._id;
+                members.accepted = false;
+                group.members.push(members);
+                group.save(function(err) {
+                if (err) {
+                    var ret = {};
+                    ret.error = 5;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    var group = {};
+                    group.groupID = group._id;
+                    group.roles = "user";
+                    walker.groups.push(group);
+                    walker.save(function(err) {
+                        if (err) {
+                            var ret = {};
+                            ret.error = 6;
+                            ret.error_message = err;
+                            return res.status(200).jsonp(ret);  
+                        } else {
+                            var ret = {};
+                            ret.error = 0;
+                            return res.status(200).jsonp(ret);  
+                        }
+                    });
+                }
+            });
+            }
+        });
     });
 };
 
@@ -588,3 +609,16 @@ exports.deleteFriend = function(req, res) {
 };
 
 
+
+
+alreadyMember = function (members, id){
+
+    var i = 0;
+    var alreadyMember = false;
+    while (i < members.length && !alreadyMember){
+        if (members[i].idMember.equals(id))
+            alreadyMember = true;
+        i++;
+    }
+    return alreadyParticipant;
+}
