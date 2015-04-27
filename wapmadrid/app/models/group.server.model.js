@@ -23,7 +23,7 @@ var GroupSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Walker'
     },
-    memebers: [{
+    members: [{
         idMember: {
             type: Schema.ObjectId,
             ref: 'Walker'

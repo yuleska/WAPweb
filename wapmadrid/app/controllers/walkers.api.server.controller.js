@@ -364,7 +364,7 @@ exports.getGroups = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = Walker.findById(walker._id).populate('groups.groupsID');
+        var query = Walker.findById(req.params.id).populate('groups.groupID');
         query.exec(function (err, groups) {
             if (err) {
                 var ret = {};

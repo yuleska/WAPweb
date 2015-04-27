@@ -36,10 +36,11 @@ exports.create = function(req, res) {
                     ret.error_message = err;
                     return res.status(200).jsonp(ret);  
                 } else {
-                    var group = {};
-                    group.groupID = group._id;
-                    group.roles = "captain";
-                    walker.groups.push(group);
+                    var groupWalker = {};
+                    groupWalker.groupID = group._id;
+                    groupWalker.accepted = true;
+                    groupWalker.rol = "captain";
+                    walker.groups.push(groupWalker);
                     walker.save(function(err) {
                         if (err) {
                             var ret = {};
@@ -55,7 +56,7 @@ exports.create = function(req, res) {
                 }
             });
     });
-};
+}
 
 /**
  * Login Walker
@@ -82,11 +83,11 @@ exports.join = function(req, res) {
                         ret.error_message = err;
                         return res.status(200).jsonp(ret);  
                     } else {
-                        var group = {};
-                        group.groupID = group._id;
-                        group.roles = "user";
-                        group.accepted = false;
-                        walker.groups.push(group);
+                        var groupWalker = {};
+                        groupWalker.groupID = group._id;
+                        groupWalker.roles = "user";
+                        groupWalker.accepted = false;
+                        walker.groups.push(groupWalker);
                         walker.save(function(err) {
                             if (err) {
                                 var ret = {};
@@ -104,7 +105,7 @@ exports.join = function(req, res) {
             }
         });
     });
-};
+}
 
 exports.responseJoinRequest = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
@@ -127,18 +128,21 @@ exports.responseJoinRequest = function(req, res) {
             Walker.findById(idMember,function(err, walkerRequest) {
                 var found = false;
                 var i;
+                var member = null;
                 for (i = 0 ; i < walkerRequest.groups.length && !found; i++){
                     var id = walkerRequest.groups[i].groupID;
                     if (id.equals(group._id)){
+                        member = walkerRequest.groups[i];
                         found = true;
                     }
                 }
-                if (found && req.body.response == "true"){ 
+                console.log(member);
+                if (found && member && req.body.response == "true"){ 
                     group.members.id(req.body.id).accepted = true;
-                    walkerRequest.groups.id(walkerRequest.groups[i]._id).accepted = true;
-                } else if ( found && req.body.response == "false"){  
+                    walkerRequest.groups.id(member._id).accepted = true;
+                } else if ( found && member && req.body.response == "false"){  
                     group.members.id(req.body.id).remove();
-                    walkerRequest.groups.id(walkerRequest.groups[i]._id).remove();
+                    walkerRequest.groups.id(member._id).remove();
                 } else if (!found){
                     ret.error = 6;
                     ret.error_message = "El usuario no pertenece al grupo";
@@ -169,7 +173,7 @@ exports.responseJoinRequest = function(req, res) {
            
         });
     }); 
-};
+}
 
 exports.expulseFromGroup = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
@@ -192,15 +196,17 @@ exports.expulseFromGroup = function(req, res) {
             Walker.findById(idMember,function(err, walkerRequest) {
                 var found = false;
                 var i;
+                var member = null;
                 for (i = 0 ; i < walkerRequest.groups.length && !found; i++){
                     var id = walkerRequest.groups[i].groupID;
                     if (id.equals(group._id)){
+                        member = walkerRequest.groups[i];
                         found = true;
                     }
                 }
-                if (found){  
+                if (member && found){  
                     group.members.id(req.body.id).remove();
-                    walkerRequest.groups.id(walkerRequest.groups[i]._id).remove();
+                    walkerRequest.groups.id(member._id).remove();
                 } else if (!found){
                     ret.error = 6;
                     ret.error_message = "El usuario no pertenece al grupo";
@@ -231,31 +237,42 @@ exports.expulseFromGroup = function(req, res) {
            
         });
     }); 
-};
+}
 
 exports.leaveGroup = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        Group.findById(req.body.groupID, function(err, group) {
-            var request  = group.members.id(req.body.id);
-            if (!request){
-                ret.error = 5;
-                ret.error_message = "Miembro no encontrado";
+        
+        var request  = walker.groups.id(req.body.id);
+        if (!request){
+            var ret = {};
+            ret.error = 5;
+            ret.error_message = "Miembro no encontrado";
+            return res.status(200).jsonp(ret);  
+        }
+        Group.findById(walker.groups.id(req.body.id).groupID, function(err, group) {
+             if (walker._id.equals(group.captain)){
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = "Cede la capitania antes de salir del grupo";
                 return res.status(200).jsonp(ret);  
             }
             var found = false;
             var i;
-            for (i = 0 ; i < walker.groups.length && !found; i++){
-                var id = walker.groups[i].groupID;
-                if (id.equals(group._id)){
+            var member = null;
+            for (i = 0 ; i < group.members.length && !found; i++){
+                var id =  group.members[i].idMember;
+                if (id.equals(walker._id)){
+                    member = group.members[i];
                     found = true;
                 }
             }
             if (found){  
-                group.members.id(req.body.id).remove();
-                walker.groups.id(walker.groups[i]._id).remove();
+                group.members.id(member._id).remove();
+                walker.groups.id(req.body.id).remove();
             } else if (!found){
+                var ret = {};
                 ret.error = 6;
                 ret.error_message = "El usuario no pertenece al grupo";
                 return res.status(200).jsonp(ret);  
@@ -283,13 +300,12 @@ exports.leaveGroup = function(req, res) {
             });
         });
     }); 
-};
+}
 
 
 
 
-alreadyMember = function (members, id){
-
+function alreadyMember (members, id){
     var i = 0;
     var alreadyMember = false;
     while (i < members.length && !alreadyMember){
@@ -297,5 +313,5 @@ alreadyMember = function (members, id){
             alreadyMember = true;
         i++;
     }
-    return alreadyParticipant;
+    return alreadyMember;
 }
