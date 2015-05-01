@@ -3,68 +3,64 @@
 /**
  * Module dependencies.
  */
-
-var passport = require('passport');
-
 module.exports = function(app) {
 
-    var users = require('../../app/controllers/users.server.controller');
-    var walkers = require('../../app/controllers/walkers.server.controller');
+    var walkers = require('../../app/controllers/walkers.api.server.controller');
 
-    // Walkers Routes
-    app.route('/walkers')
-        .get(walkers.list)
-        .post(users.requiresLogin, walkers.create);
+    app.route('/api/walkers')
+        .get(walkers.list);
 
-    app.route('/walkers/:walkerId')
-        .get(walkers.read)
-        .put(users.requiresLogin, walkers.hasAuthorization, walkers.update)
-        .delete(users.requiresLogin, walkers.hasAuthorization, walkers.delete);
+    app.route('/api/walkers/register')
+        .post(walkers.register);
 
-    // Finish by binding the Walker middleware
-    app.param('walkerId', walkers.walkerByID);
+    app.route('/api/walkers/login')
+        .post(walkers.login);
 
-    // Walker Routes
-    /*var walkers = require('../../app/controllers/walkers.server.controller');
+    app.route('/api/walkers/logout/:id')
+        .post(walkers.logout);
 
-    // Setting up the walkers profile api
-    app.route('/walkers/me').get(walkers.me);
-    app.route('/walkers').put(walkers.update);
-    app.route('/walkers/accounts').delete(walkers.removeOAuthProvider);
+    app.route('/api/walkers/read/:id')
+        .post(walkers.read);
 
-    // Setting up the walkers password api
-    app.route('/walkers/password').post(walkers.changePassword);
-    app.route('/auth/forgot').post(walkers.forgot);
-    app.route('/auth/reset/:token').get(walkers.validateResetToken);
-    app.route('/auth/reset/:token').post(walkers.reset);
+    app.route('/api/walkers/update/info/:id')
+        .post(walkers.updateInfo);
 
-    // Setting up the walkers authentication api
-    app.route('/auth/signup').post(walkers.signup);
-    app.route('/auth/signin').post(walkers.signin);
-    app.route('/auth/signout').get(walkers.signout);
+    app.route('/api/walkers/update/password/:id')
+        .post(walkers.updatePassword);
 
-    // Finish by binding the walker middleware
-    app.param('walkerId', walkers.walkerByID);*/
+    app.route('/api/walkers/update/status/:id')
+        .post(walkers.updateStatus);
+
+    app.route('/api/walkers/update/diet/:id')
+        .post(walkers.updateDiet);
+
+    app.route('/api/walkers/update/exercise/:id')
+        .post(walkers.updateExercise);
+
+    app.route('/api/walkers/upload/stats/:id')
+        .post(walkers.uploadStats);
+
+    app.route('/api/walkers/cms/:id')
+        .post(walkers.getCms);
+
+    app.route('/api/walkers/cms/:id')
+        .put(walkers.setCms);
+        
+    app.route('/api/walkers/groups/:id')
+        .post(walkers.getGroups);
+
+    app.route('/api/walkers/friends/:id')
+        .post(walkers.getFriends);
+
+    app.route('/api/walkers/friends/:id')
+        .put(walkers.setFriends);
+
+    app.route('/api/walkers/friends/response/:id')
+        .post(walkers.responseFriendRequest);
+
+    app.route('/api/walkers/friends/:id')
+        .delete(walkers.deleteFriend);
 };
 
 
 
-/*'use strict';
-
-module.exports = function(app) {
-    var users = require('../../app/controllers/users.server.controller');
-    var walkers = require('../../app/controllers/walkers.server.controller');
-
-    // Walkers Routes
-    app.route('/walkers')
-        .get(walkers.list)
-        .post(users.requiresLogin, walkers.create);
-
-    app.route('/walkers/:walkerId')
-        .get(walkers.read)
-        .put(users.requiresLogin, walkers.hasAuthorization, walkers.update)
-        .delete(users.requiresLogin, walkers.hasAuthorization, walkers.delete);
-
-    // Finish by binding the Walker middleware
-    app.param('walkerId', walkers.walkerByID);
-};*/
