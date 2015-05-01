@@ -51,9 +51,6 @@ module.exports = function(app) {
     app.route('/api/walkers/groups/:id')
         .post(walkers.getGroups);
 
-    app.route('/api/walkers/groups/:id')
-        .delete(walkers.deleteGroup);
-
     app.route('/api/walkers/friends/:id')
         .post(walkers.getFriends);
 

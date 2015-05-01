@@ -3,30 +3,34 @@
 /**
  * Module dependencies.
  */
-var fs = require('fs'),
-    http = require('http'),
-    https = require('https'),
-    express = require('express'),
+var express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
     session = require('express-session'),
     compress = require('compression'),
     methodOverride = require('method-override'),
-    cookieParser = require('cookie-parser'),
     helmet = require('helmet'),
-    passport = require('passport'),
     mongoStore = require('connect-mongo')({
         session: session
     }),
-    flash = require('connect-flash'),
     config = require('./config'),
-    consolidate = require('consolidate'),
     path = require('path');
 
 module.exports = function(db) {
     // Initialize express app
     var app = express();
 
+    var router = express.Router();
+
+    router.get('/', function(req, res) {
+       res.send("End of the road");
+    });
+
+    router.post('/', function(req, res) {
+       res.send(req.body);
+    });
+
+    app.use(router);
     // Globbing model files
     config.getGlobbedFiles('./app/models/**/*.js').forEach(function(modelPath) {
         require(path.resolve(modelPath));
@@ -35,15 +39,6 @@ module.exports = function(db) {
     // Setting application local variables
     app.locals.title = config.app.title;
     app.locals.description = config.app.description;
-    app.locals.keywords = config.app.keywords;
-    app.locals.jsFiles = config.getJavaScriptAssets();
-    app.locals.cssFiles = config.getCSSAssets();
-
-    // Passing the request url to environment locals
-    app.use(function(req, res, next) {
-        res.locals.url = req.protocol + '://' + req.headers.host + req.url;
-        next();
-    });
 
     // Should be placed before express.static
     app.use(compress({
@@ -54,25 +49,9 @@ module.exports = function(db) {
     }));
 
     // Showing stack errors
-    app.set('showStackError', true);
+    app.set('showStackError', false);
 
-    // Set swig as the template engine
-    app.engine('server.view.html', consolidate[config.templateEngine]);
-
-    // Set views path and view engine
-    app.set('view engine', 'server.view.html');
-    app.set('views', './app/views');
-
-    // Environment dependent middleware
-    if (process.env.NODE_ENV === 'development') {
-        // Enable logger (morgan)
-        app.use(morgan('dev'));
-
-        // Disable views cache
-        app.set('view cache', false);
-    } else if (process.env.NODE_ENV === 'production') {
-        app.locals.cache = 'memory';
-    }
+    app.use(morgan('dev'));
 
     // Request body parsing middleware should be above methodOverride
     app.use(bodyParser.urlencoded({
@@ -81,26 +60,17 @@ module.exports = function(db) {
     app.use(bodyParser.json());
     app.use(methodOverride());
 
-    // CookieParser should be above session
-    app.use(cookieParser());
-
     // Express MongoDB session storage
     app.use(session({
+        secret: 'wappies',
         saveUninitialized: true,
         resave: true,
-        secret: config.sessionSecret,
         store: new mongoStore({
             db: db.connection.db,
             collection: config.sessionCollection
         })
     }));
 
-    // use passport session
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    // connect flash for flash messages
-    app.use(flash());
 
     // Use helmet to secure Express headers
     app.use(helmet.xframe());
@@ -110,7 +80,7 @@ module.exports = function(db) {
     app.disable('x-powered-by');
 
     // Setting the app router and static folder
-    app.use(express.static(path.resolve('./public')));
+  //  app.use(express.static(path.resolve('./public')));
 
     // Globbing routing files
     config.getGlobbedFiles('./app/routes/*.js').forEach(function(routePath) {
@@ -133,29 +103,10 @@ module.exports = function(db) {
 
     // Assume 404 since no middleware responded
     app.use(function(req, res) {
-        res.status(404).render('404', {
-            url: req.originalUrl,
-            error: 'Not Found'
-        });
+        var ret = {};
+        ret.error = "NotFound"
+        res.status(404).jsonp(ret); 
     });
-
-    if (process.env.NODE_ENV === 'secure') {
-        // Log SSL usage
-        console.log('Securely using https protocol');
-
-        // Load SSL key and certificate
-        var privateKey = fs.readFileSync('./config/sslcerts/key.pem', 'utf8');
-        var certificate = fs.readFileSync('./config/sslcerts/cert.pem', 'utf8');
-
-        // Create HTTPS Server
-        var httpsServer = https.createServer({
-            key: privateKey,
-            cert: certificate
-        }, app);
-
-        // Return HTTPS server instance
-        return httpsServer;
-    }
 
     // Return Express server instance
     return app;

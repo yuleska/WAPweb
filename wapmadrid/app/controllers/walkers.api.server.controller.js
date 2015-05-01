@@ -146,8 +146,8 @@ exports.updateInfo = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        weight.firstName = req.body.firstName;
-        weight.lastName = req.body.lastName;
+        walker.firstName = req.body.firstName;
+        walker.lastName = req.body.lastName;
         walker.birthDate = req.body.birthDate;
         walker.email = req.body.email;
         walker.sex = req.body.sex;
@@ -259,7 +259,7 @@ exports.updateExercise = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
         var exercise = {};
-        exercise.value = req.body.diet;
+        exercise.value = req.body.exercise;
         walker.exercise.push(exercise);
         walker.save(function(err) {
             if (err) {
@@ -326,7 +326,9 @@ exports.getCms = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        User.findById(walker.user, function(err, cms) { 
+        var query = User.findById(walker.user);
+        query.select('image displayName address telephone openingHours');
+        query.exec(function(err, cms) { 
             var ret = {};
             if(err) {
                 ret.error = 1;
@@ -364,7 +366,7 @@ exports.getGroups = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = Walker.findById(req.params.id).populate('groups.groupID');
+        var query = Walker.findById(req.params.id).populate('groups.groupID', 'image name');
         query.exec(function (err, groups) {
             if (err) {
                 var ret = {};
@@ -381,63 +383,12 @@ exports.getGroups = function(req, res) {
     }); 
 };
 
-exports.deleteGroup = function(req, res) {
-    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
-        if (checkCredentials.error != "0")
-            return res.status(200).jsonp(checkCredentials);
-        var request  = walker.groups.id(req.body.id);
-        if (!request){
-            var ret = {};
-            ret.error = 2;
-            ret.error_message = err;
-            return res.status(200).jsonp(ret);  
-        } 
-        walker.groups.id(req.body.id).remove();
-        walker.save(function(err) {
-            if (err) {
-                var ret = {};
-                ret.error = 1;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);  
-            } else {
-                // Delete walker from group
-                var ret = {};
-                ret.error = 0;
-                return res.status(200).jsonp(ret);  
-            }
-        });
-
-    }); 
-};
-
-exports.setGroup = function(req, res) {
-    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
-        if (checkCredentials.error != "0")
-            return res.status(200).jsonp(checkCredentials);
-        var group = {};
-        group.groupID = req.body.group;
-        group.roles = req.body.roles;
-        walker.groups.push(group);
-        walker.save(function(err) {
-            if (err) {
-                var ret = {};
-                ret.error = 1;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);  
-            } else {
-                var ret = {};
-                ret.error = 0;
-                return res.status(200).jsonp(ret);  
-            }
-        });
-    }); 
-};
 
 exports.getFriends = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = Walker.findById(walker._id).populate('friends.friendID', 'profileImage displayName _id roles.type');
+        var query = Walker.findById(walker._id).populate('friends.friendID', 'profileImage displayName _id roles');
         query.exec(function (err, friends) {
             if (err) {
                 var ret = {};

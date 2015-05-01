@@ -25,6 +25,9 @@ var validateLocalStrategyPassword = function(password) {
  * User Schema
  */
 var UserSchema = new Schema({
+    image:{
+        type: String,
+    },
     name: {
         type: String,
         trim: true,
