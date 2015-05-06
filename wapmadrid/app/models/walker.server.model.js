@@ -60,7 +60,6 @@ var WalkerSchema = new Schema({
     email: {
         type: String,
         trim: true,
-        unique: 'Direccion de correo en uso',
         default: '',
         validate: [validateLocalStrategyProperty, 'Please fill in your email'],
         match: [/.+\@.+\..+/, 'Please fill a valid email address']

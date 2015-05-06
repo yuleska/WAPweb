@@ -55,7 +55,7 @@ module.exports = function(db) {
 
     // Request body parsing middleware should be above methodOverride
     app.use(bodyParser.urlencoded({
-        extended: true
+        extended: false
     }));
     app.use(bodyParser.json());
     app.use(methodOverride());
