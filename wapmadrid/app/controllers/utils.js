@@ -29,3 +29,29 @@ exports.checkCredentials = function (id,token, callback){
 
 };
 
+exports.checkCredentialsUser = function (id,token, callback){
+	User.findById(id, function(err, user) {
+		var ret = {};
+		if(err) {
+	    		ret.error = 1;
+	    		ret.message_es = "El identificador de usuario introducido no es valido";
+			return callback(ret,null);
+		}
+
+		if (user == null){
+			ret.error = 2;
+		    	ret.message_es = "Ha ocurrido un error, por favor cierra sesion y vuelve a iniciar. Gracias";
+			return callback(ret,null);
+		}
+		
+
+		if (token != user.token || user.token == null){
+			ret.error = 3;
+			ret.message_es = "Ha ocurrido un error, por favor cierra sesion y vuelve a iniciar. Gracias";
+			return callback(ret,null);
+		}
+		ret.error = 0;
+		return callback(ret,user);
+	});
+
+};
