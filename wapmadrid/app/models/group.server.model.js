@@ -45,7 +45,20 @@ var GroupSchema = new Schema({
     route: {
         type: Schema.ObjectId,
         ref: 'Route'
-    }
+    },
+    messages: [{
+        idSender: {
+            type: Schema.ObjectId,
+            ref: 'Walker'
+        },
+        date: {
+            type: Date,
+            default: Date.now
+        },
+        text: {
+            type: String
+        }
+    }],
 });
 
 mongoose.model('Group', GroupSchema);

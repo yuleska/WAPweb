@@ -57,6 +57,27 @@ exports.create = function(req, res) {
     });
 }
 
+exports.getGroup = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName _id');
+       query.exec( function(err, group) {
+            if (err) {
+                var ret = {};
+                ret.error = 6;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                ret.group = group;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+    });
+}
+
 /**
  * Login Walker
  */
@@ -301,6 +322,150 @@ exports.leaveGroup = function(req, res) {
     }); 
 }
 
+exports.listMembers = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var query = Group.findById(req.body.groupID).populate('members.idMember', 'profileImage displayName _id');
+        query.exec(function (err, members) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                ret.members = members.members;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+    }); 
+}
+
+exports.getMessages = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var query = Group.findById(req.body.groupID).populate('messages.idSender', 'profileImage displayName _id').sort('-messages.date');
+        query.exec(function (err, messages) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                ret.members = messages.messages;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+    }); 
+}
+
+exports.sendMessage = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var message = {};
+        message.text = req.body.text;
+        message.idSender = req.params.id;
+        Group.findById(req.body.groupID, function(err,group){
+            group.messages.push(message);
+            group.save(function(err) {
+                if (err) {
+                    var ret = {};
+                    ret.error = 7;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else { 
+                    var ret = {};
+                    ret.error = 0;
+                    return res.status(200).jsonp(ret); 
+                }
+            });
+        });
+    }); 
+}
+
+exports.changeCaptain = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        
+        Group.findById(req.body.groupID, function(err, group) {
+            if (!group.captain.equals(walker._id)){
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = "No eres el capitan del grupo";
+                return res.status(200).jsonp(ret);  
+            }
+            group.captain = req.body.newCaptainID;
+            var i = 0;
+            var found = false;
+            while (i < walker.groups.length && !found){
+                if (walker.groups[i].groupID.equals(req.body.groupID)){
+                    walker.groups[i].rol = "user";
+                    found = true;
+                }
+                i++;
+            }
+            Walker.findById(req.body.newCaptainID, function(err, newCaptain){
+                var i = 0;
+                var found = false;
+                while (i < newCaptain.groups.length && !found){
+                    if (newCaptain.groups[i].groupID.equals(req.body.groupID)){
+                        newCaptain.groups[i].rol = "captain";
+                        found = true;
+                    }
+                    i++;
+                } 
+                group.save();
+                walker.save();
+                newCaptain.save();  
+                var ret = {};
+                ret.error = 0;
+                return res.status(200).jsonp(ret);  
+            });
+        });
+    }); 
+}
+
+exports.deleteGroup = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        
+        Group.findById(req.body.groupID, function(err, group) {
+            if (!group.captain.equals(walker._id)){
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = "No eres el capitan del grupo";
+                return res.status(200).jsonp(ret);  
+            }
+            var j = 0;
+            for (j = 0; j < group.members.length; j++){
+                Walker.findById(group.members[j].idMember, function(err, member){
+                    var i = 0;
+                    var found = false;
+                    while (i < member.groups.length && !found){
+                        if (member.groups[i].groupID.equals(req.body.groupID)){
+                            member.groups.id(member.groups[i]._id).remove();
+                            found = true;
+                        }
+                        i++;
+                    }
+                    member.save();
+                });
+            }
+            group.remove();
+            var ret = {};
+            ret.error = 0;
+            return res.status(200).jsonp(ret);  
+        });
+    }); 
+}
 
 
 
@@ -314,3 +479,5 @@ function alreadyMember (members, id){
     }
     return alreadyMember;
 }
+
+
