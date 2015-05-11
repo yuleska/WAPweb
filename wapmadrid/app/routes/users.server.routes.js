@@ -24,21 +24,21 @@ module.exports = function(app) {
         .post(users.listWalkers);
 
     app.route('/api/cms/walker/read/:id')
-        .post(walkers.readWalker);
+        .post(users.readWalker);
 
     app.route('/api/cms/walker/info/:id')
-        .post(walkers.updateInfoWalker);
+        .post(users.updateInfoWalker);
 
     app.route('/api/cms/walker/update/password/:id')
-        .post(walkers.updatePasswordWalker);
+        .post(users.updatePasswordWalker);
 
     app.route('/api/cms/walker/update/status/:id')
-        .post(walkers.updateStatusWalker);
+        .post(users.updateStatusWalker);
 
     app.route('/api/cms/walker/update/diet/:id')
-        .post(walkers.updateDietWalker);
+        .post(users.updateDietWalker);
 
     app.route('/api/cms/walker/update/exercise/:id')
-        .post(walkers.updateExerciseWalker);
+        .post(users.updateExerciseWalker);
    
 };

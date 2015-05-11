@@ -19,7 +19,7 @@ exports.register = function(req, res) {
     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        if (!(user.roles.equals("admin")){
+        if (!(user.roles.equals("admin"))){
             var ret = {};
             ret.error = 5;
             ret.error_message = "No tienes permiso para crear un CMS";
@@ -247,8 +247,7 @@ exports.updatePasswordWalker = function(req, res) {
     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials); 
-    });
-    Walker.findById(req.body.walkerID, function(err, walker){       
+        Walker.findById(req.body.walkerID, function(err, walker){       
         var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
         walker.password = walker.hashPassword(req.body.password,salt);
@@ -264,8 +263,10 @@ exports.updatePasswordWalker = function(req, res) {
                 ret.error = 0;
                 return res.status(200).jsonp(ret);  
             }
+            });
+        });
     });
-};
+}
 
 /**
  * Update a Walkerswalkersapicontroller
@@ -274,55 +275,54 @@ exports.updateStatusWalker = function(req, res) {
     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials); 
-    });
-    Walker.findById(req.body.walkerID, function(err, walker){       
-        var weight = {};
-        weight.value = req.body.weight;
-        weight.imc = req.body.weight / (req.body.height * req.body.height);
-        walker.weight.push(weight);
-        walker.height = req.body.height;
-        walker.smoker = req.body.smoker;
-        walker.alcohol = req.body.smoker;
-        walker.save(function(err) {
-            if (err) {
-                var ret = {};
-                ret.error = 1;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);  
-            } else {
-                var ret = {};
-                ret.error = 0;
-                return res.status(200).jsonp(ret);  
-            }
+        Walker.findById(req.body.walkerID, function(err, walker){       
+            var weight = {};
+            weight.value = req.body.weight;
+            weight.imc = req.body.weight / (req.body.height * req.body.height);
+            walker.weight.push(weight);
+            walker.height = req.body.height;
+            walker.smoker = req.body.smoker;
+            walker.alcohol = req.body.smoker;
+            walker.save(function(err) {
+                if (err) {
+                    var ret = {};
+                    ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    var ret = {};
+                    ret.error = 0;
+                    return res.status(200).jsonp(ret);  
+                }
+            });
         });
     });
-};
+}
 
 
 exports.updateDietWalker = function(req, res) {
     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials); 
-    });
-    Walker.findById(req.body.walkerID, function(err, walker){ 
-        var diet = {};
-        diet.value = req.body.diet;
-        walker.diet.push(diet);
-        walker.save(function(err) {
-            if (err) {
-                var ret = {};
-                ret.error = 1;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);  
-            } else {
-                var ret = {};
-                ret.error = 0;
-                return res.status(200).jsonp(ret);  
-            }
+        Walker.findById(req.body.walkerID, function(err, walker){ 
+            var diet = {};
+            diet.value = req.body.diet;
+            walker.diet.push(diet);
+            walker.save(function(err) {
+                if (err) {
+                    var ret = {};
+                    ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    var ret = {};
+                    ret.error = 0;
+                    return res.status(200).jsonp(ret);  
+                }
+            });
         });
-
     });
-};
+}
 
 exports.updateExerciseWalker = function(req, res) {
     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
@@ -346,7 +346,7 @@ exports.updateExerciseWalker = function(req, res) {
             });
         });
     });
-};
+}
 
 exports.readWalker = function(req, res) {
     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
