@@ -67,10 +67,6 @@ var UserSchema = new Schema({
         validate: [validateLocalStrategyProperty, 'Completa el horario de atención al público']
     },
     /*FALTA LA IMAGEN DEL MAPA (COORDENADAS) Y LA LISTA DE GRUPOS*/
-    displayName: {
-        type: String,
-        trim: true
-    },
     provider: {
         type: String,
     },
@@ -96,12 +92,21 @@ var UserSchema = new Schema({
     },
     resetPasswordExpires: {
         type: Date
-    }
-});
+    },
+    walkers:[{
+        walkerID: {
+            type: Schema.ObjectId,
+            ref: 'Walker'
+        }
+    }],
+    groups:[{
+        groupsID: {
+            type: Schema.ObjectId,
+            ref: 'Group'
+        }
+    }]
 
-/**
- * Hook a pre save method to hash the password
- */
+});
 
 /**
  * Create instance method for hashing a password

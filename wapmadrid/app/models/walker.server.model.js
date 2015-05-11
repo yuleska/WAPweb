@@ -64,6 +64,10 @@ var WalkerSchema = new Schema({
         validate: [validateLocalStrategyProperty, 'Please fill in your email'],
         match: [/.+\@.+\..+/, 'Please fill a valid email address']
     },
+    address:{
+        type: String,
+        trim: true
+    },
     username: {
         type: String,
         unique: 'Nombre de usuario en uso',

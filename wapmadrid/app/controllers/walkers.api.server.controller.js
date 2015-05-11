@@ -176,7 +176,7 @@ exports.updatePassword = function(req, res) {
         if (walker.authenticate(req.body.oldPassword)){
             var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
             salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
-            walker.password = walker.hashPassword(password,salt);
+            walker.password = walker.hashPassword(req.body.password,salt);
             walker.salt = salt;
             walker.save(function(err) {
                 if (err) {

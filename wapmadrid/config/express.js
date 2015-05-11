@@ -5,6 +5,7 @@
  */
 var express = require('express'),
     morgan = require('morgan'),
+    corser = require('corser'),
     bodyParser = require('body-parser'),
     session = require('express-session'),
     compress = require('compression'),
@@ -34,6 +35,17 @@ module.exports = function(db) {
     // Globbing model files
     config.getGlobbedFiles('./app/models/**/*.js').forEach(function(modelPath) {
         require(path.resolve(modelPath));
+    });
+
+    app.use(corser.create({
+        methods: corser.simpleMethods.concat(["PUT"]),
+        requestHeaders: corser.simpleRequestHeaders.concat(["X-Requested-With"])
+    }));
+    app.all('*', function(request, response, next) {
+        response.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With,Authorization,Access-Control-Allow-Origin');
+        response.header('Access-Control-Allow-Methods', 'POST,GET,DELETE');
+        response.header('Access-Control-Allow-Origin', '*');
+        next();
     });
 
     // Setting application local variables
