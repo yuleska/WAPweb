@@ -106,9 +106,9 @@ var UserSchema = new Schema({
 /**
  * Create instance method for hashing a password
  */
-UserSchema.methods.hashPassword = function(password) {
-    if (this.salt && password) {
-        return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
+WalkerSchema.methods.hashPassword = function(password,salt) {
+    if (salt && password) {
+        return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
     } else {
         return password;
     }
@@ -117,8 +117,8 @@ UserSchema.methods.hashPassword = function(password) {
 /**
  * Create instance method for authenticating user
  */
-UserSchema.methods.authenticate = function(password) {
-    return this.password === this.hashPassword(password);
+WalkerSchema.methods.authenticate = function(password) {
+    return this.password === this.hashPassword(password,this.salt);
 };
 
 /**
