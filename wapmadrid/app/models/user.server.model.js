@@ -106,7 +106,7 @@ var UserSchema = new Schema({
 /**
  * Create instance method for hashing a password
  */
-WalkerSchema.methods.hashPassword = function(password,salt) {
+UserSchema.methods.hashPassword = function(password,salt) {
     if (salt && password) {
         return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
     } else {
@@ -117,7 +117,7 @@ WalkerSchema.methods.hashPassword = function(password,salt) {
 /**
  * Create instance method for authenticating user
  */
-WalkerSchema.methods.authenticate = function(password) {
+UserSchema.methods.authenticate = function(password) {
     return this.password === this.hashPassword(password,this.salt);
 };
 
