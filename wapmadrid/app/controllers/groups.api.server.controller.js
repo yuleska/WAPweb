@@ -37,6 +37,7 @@ exports.create = function(req, res) {
                 } else {
                     var groupWalker = {};
                     groupWalker.groupID = group._id;
+                    groupWalker.routeID = group.route;
                     groupWalker.accepted = true;
                     groupWalker.rol = "captain";
                     walker.groups.push(groupWalker);
@@ -65,13 +66,15 @@ exports.getGroup = function(req, res) {
        query.exec( function(err, group) {
             if (err) {
                 var ret = {};
-                ret.error = 6;
+                ret.error = 4;
                 ret.error_message = err;
                 return res.status(200).jsonp(ret);  
             } else {
                 var ret = {};
                 ret.error = 0;
                 ret.group = group;
+                delete ret.group.messages;
+                delete ret.group.members;
                 return res.status(200).jsonp(ret);  
             }
         });
@@ -330,7 +333,7 @@ exports.listMembers = function(req, res) {
         query.exec(function (err, members) {
             if (err) {
                 var ret = {};
-                ret.error = 1;
+                ret.error = 4;
                 ret.error_message = err;
                 return res.status(200).jsonp(ret);  
             } else {
@@ -351,13 +354,13 @@ exports.getMessages = function(req, res) {
         query.exec(function (err, messages) {
             if (err) {
                 var ret = {};
-                ret.error = 1;
+                ret.error = 4;
                 ret.error_message = err;
                 return res.status(200).jsonp(ret);  
             } else {
                 var ret = {};
                 ret.error = 0;
-                ret.members = messages.messages;
+                ret.messages = messages.messages;
                 return res.status(200).jsonp(ret);  
             }
         });
@@ -376,7 +379,7 @@ exports.sendMessage = function(req, res) {
             group.save(function(err) {
                 if (err) {
                     var ret = {};
-                    ret.error = 7;
+                    ret.error = 5;
                     ret.error_message = err;
                     return res.status(200).jsonp(ret);  
                 } else { 

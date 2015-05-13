@@ -135,6 +135,10 @@ var WalkerSchema = new Schema({
             type: Schema.ObjectId,
             ref: 'Group'
         },
+        routeID: {
+            type: Schema.ObjectId,
+            ref: 'Route'
+        },
         rol: {
             type: String,
             enum: ['captain', 'user'],
@@ -144,13 +148,7 @@ var WalkerSchema = new Schema({
             type: Boolean,
             default: false
         }
-    }],
-    routes: [{
-        routeID: {
-            type: Schema.ObjectId,
-            ref: 'Route'
-        }
-    }],
+    }],    
     stats: [{
         distance: {
             type: Number

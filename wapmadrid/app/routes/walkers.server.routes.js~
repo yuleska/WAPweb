@@ -60,10 +60,6 @@ module.exports = function(app) {
 
     app.route('/api/walkers/friends/:id')
         .delete(walkers.deleteFriend);
-
-    app.route('/api/walkers/routes/:id')
-        .post(walkers.getRoutes);
-
 };
 
 

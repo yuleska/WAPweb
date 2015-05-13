@@ -365,8 +365,7 @@ exports.getGroups = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = Walker.findById(walker._id).populate('groups.groupID', 'image name route').populate('groups.routeID', 'name');
-         query.exec(function (err, groups) {
+         Group.populate(walker, {path: 'groups.groupID', select:'image name route'},function (err, groups) {
             if (err) {
                 var ret = {};
                 ret.error = 1;
@@ -375,32 +374,12 @@ exports.getGroups = function(req, res) {
             } else {
                 var ret = {};
                 ret.error = 0;
-                ret.groups = groups.groups;
-                return res.status(200).jsonp(ret);  
-                
-            }
-        }); 
-    }); 
-};
-
-exports.getRoutes = function(req, res) {
-    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
-        if (checkCredentials.error != "0")
-            return res.status(200).jsonp(checkCredentials);
-        var query = Route.find();
-        query.where('owner').equals(walker._id);
-        query.select('name distance')
-         query.exec(function (err, routes) {
-            if (err) {
-                var ret = {};
-                ret.error = 1;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);  
-            } else {
-                var ret = {};
-                ret.error = 0;
-                ret.routes = routes;
-                return res.status(200).jsonp(ret);  
+		Route.populate(groups.groups[0], {path: 'route', select: 'name'},function (err, returned) { 
+			ret.ret = returned;
+			return res.status(200).jsonp(ret);  
+		}); 
+		//ret.groups = groups.groups;
+             //   return res.status(200).jsonp(ret);  
                 
             }
         }); 
@@ -412,7 +391,7 @@ exports.getFriends = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        Walker.populate(walker, {path: 'friends.friendID', select: 'profileImage displayName _id roles'}, function (err, friends) {
+        Walker.populate(walker, {path: 'friends.friendID', select: 'profileImage displayName _id roles', function (err, friends) {
             if (err) {
                 var ret = {};
                 ret.error = 1;
