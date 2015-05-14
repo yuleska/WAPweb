@@ -367,7 +367,7 @@ exports.getGroups = function(req, res) {
             return res.status(200).jsonp(checkCredentials);
       var query = Group.find();
       query.where('members.idMember').equals(walker._id);
-      query.select('image name route members');
+      query.select('captain image name route members');
       query.populate('route', 'name');
          query.exec(function (err, groups) {
             if (err) {

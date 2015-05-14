@@ -48,6 +48,9 @@ var UserSchema = new Schema({
     salt: {
         type: String
     },
+    token: {
+        type: String
+    },
     address: {
         type: String,
         trim: true,
@@ -66,18 +69,8 @@ var UserSchema = new Schema({
         default: '',
         validate: [validateLocalStrategyProperty, 'Completa el horario de atención al público']
     },
-    /*FALTA LA IMAGEN DEL MAPA (COORDENADAS) Y LA LISTA DE GRUPOS*/
     provider: {
         type: String,
-    },
-    providerData: {},
-    additionalProvidersData: {},
-    roles: {
-        type: [{
-            type: String,
-            enum: ['user', 'admin']
-        }],
-        default: ['user']
     },
     updated: {
         type: Date
@@ -85,13 +78,6 @@ var UserSchema = new Schema({
     created: {
         type: Date,
         default: Date.now
-    },
-    /* For reset password */
-    resetPasswordToken: {
-        type: String
-    },
-    resetPasswordExpires: {
-        type: Date
     },
     walkers:[{
         walkerID: {
@@ -104,8 +90,11 @@ var UserSchema = new Schema({
             type: Schema.ObjectId,
             ref: 'Group'
         }
-    }]
-
+    }],
+    route: {
+        type: Schema.ObjectId,
+        ref: 'Route'
+    }
 });
 
 /**
