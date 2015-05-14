@@ -130,25 +130,6 @@ var WalkerSchema = new Schema({
     alcohol: {
         type: Number
     },
-    groups: [{
-        groupID: {
-            type: Schema.ObjectId,
-            ref: 'Group'
-        },
-        routeID: {
-            type: Schema.ObjectId,
-            ref: 'Route'
-        },
-        rol: {
-            type: String,
-            enum: ['captain', 'user'],
-            default: 'user'
-        },
-        accepted: {
-            type: Boolean,
-            default: false
-        }
-    }],    
     stats: [{
         distance: {
             type: Number

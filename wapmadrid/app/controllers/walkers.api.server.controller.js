@@ -365,7 +365,10 @@ exports.getGroups = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = Walker.findById(walker._id).populate('groups.groupID', 'image name route').populate('groups.routeID', 'name');
+      var query = Group.find();
+      query.where('members.idMember').equals(walker._id);
+      query.select('image name route members');
+      query.populate('route', 'name');
          query.exec(function (err, groups) {
             if (err) {
                 var ret = {};
@@ -375,7 +378,7 @@ exports.getGroups = function(req, res) {
             } else {
                 var ret = {};
                 ret.error = 0;
-                ret.groups = groups.groups;
+                ret.groups = groups;
                 return res.status(200).jsonp(ret);  
                 
             }
@@ -390,7 +393,7 @@ exports.getRoutes = function(req, res) {
         var query = Route.find();
         query.where('owner').equals(walker._id);
         query.select('name distance')
-         query.exec(function (err, routes) {
+        query.exec(function (err, routes) {
             if (err) {
                 var ret = {};
                 ret.error = 1;
