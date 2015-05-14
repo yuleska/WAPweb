@@ -12,6 +12,7 @@
     User = mongoose.model('User'),
     Group = mongoose.model('Group'),
     Route = mongoose.model('Route'),
+    Event = mongoose.model('Event'),
     utils = require('./utils.js');
 
 
@@ -371,6 +372,33 @@ exports.readWalker = function(req, res) {
             ret.stats = walker.stats;
             ret.error = 0;
             return res.status(200).jsonp(ret); 
+        });
+    });
+}
+
+exports.home = function(req, res) {
+    utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials); 
+        var ret = {};
+        ret.name = user.name;
+        ret.walkersCount = user.walkers.length;
+        ret.groupsCount = user.groups.length;
+        var query = Route.findById(user.route);
+        query.select('name');
+        query.exec(function(err,route){
+            ret.route = route;
+            Routes.count(function(err,routesCount){
+                ret.routesCount = routesCount;
+                var queryEvents = Event.find().populate('owner, name');
+                queryEvents.select('name text date owner');
+                queryEvents.sort('-created');
+                queryEvents.exec(function(err,events){
+                    ret.events = events;
+                    ret.error = 0;
+                    return res.status(200).jsonp(ret); 
+                });
+            });
         });
     });
 }

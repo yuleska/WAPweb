@@ -40,5 +40,8 @@ module.exports = function(app) {
 
     app.route('/api/cms/walker/update/exercise/:id')
         .post(users.updateExerciseWalker);
+
+    app.route('/api/cms/home/:id')
+        .post(users.home);
    
 };
