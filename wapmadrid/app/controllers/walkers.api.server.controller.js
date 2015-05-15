@@ -68,23 +68,42 @@ exports.read = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var ret = {};
-        ret.profileImage = walker.profileImage;
-        ret.firstName = walker.firstName;
-        ret.lastName = walker.lastName;
-        ret.sex = walker.sex;
-        ret.birthDate = walker.birthDate;
-        ret.email = walker.email;
-        ret.telephone = walker.telephone;
-        ret.weight = walker.weight;
-        ret.height = walker.height;
-        ret.smoker = walker.smoker;
-        ret.alcohol = walker.alcohol;
-        ret.diet = walker.diet;
-        ret.exercise = walker.exercise;
-        ret.stats = walker.stats;
-        ret.error = 0;
-        return res.status(200).jsonp(ret); 
+        if (!req.body.walkerID){
+	        var ret = {};
+	        ret.walker = {};
+	        ret.walker.profileImage = walker.profileImage;
+	        ret.walker.firstName = walker.firstName;
+	        ret.walker.lastName = walker.lastName;
+	        ret.walker.sex = walker.sex;
+	        ret.walker.birthDate = walker.birthDate;
+	        ret.walker.email = walker.email;
+	        ret.walker.telephone = walker.telephone;
+	        ret.walker.weight = walker.weight;
+	        ret.walker.height = walker.height;
+	        ret.walker.smoker = walker.smoker;
+	        ret.walker.alcohol = walker.alcohol;
+	        ret.walker.diet = walker.diet;
+	        ret.walker.exercise = walker.exercise;
+	        ret.walker.stats = walker.stats;
+	        ret.error = 0;
+	        return res.status(200).jsonp(ret); 
+	    } else {
+	    	var query = Walker.findById(req.body.walkerID);
+	    	query.select('profileImage firstName lastName sex birthDate email telephone weight height smoker alcohol exercise stats');
+	    	query.exec(function(err,search){
+	    		 if (err) {
+                    var ret = {};
+                	ret.error = err.code;
+                	ret.error_message = err;
+                    return res.status(200).jsonp(ret);	
+                } else {
+                	var ret = {};
+                	ret.walker = search;
+                	ret.error = 0;
+                    return res.status(200).jsonp(ret);	
+                }
+	    	});
+	    }
     });
 };
 
