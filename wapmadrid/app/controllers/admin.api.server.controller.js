@@ -22,7 +22,7 @@ exports.registerCms = function(req, res) {
         query.exec(function (err, duplicate) {
             if (duplicate){
                 var ret = {};
-                ret.error = 1;
+                ret.error = 4;
                 ret.error_message = "Nombre de centro en uso";
                 return res.status(200).jsonp(ret);  
             }
@@ -48,7 +48,7 @@ exports.registerCms = function(req, res) {
             });
         } else {
             var ret = {};
-            ret.error = 2;
+            ret.error = 5;
             ret.error_message = "Password demasiado corta";
             return res.status(200).jsonp(ret);  
         }
@@ -123,8 +123,6 @@ exports.readCms = function(req, res) {
                 var ret = {};
                 ret.error = 0;
                 ret.user = user;
-                delete ret.user.route;
-                ret.user.route = user.route.name;
                 return res.status(200).jsonp(ret); 
             } 
         });
