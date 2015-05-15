@@ -78,6 +78,8 @@ exports.read = function(req, res) {
 	        ret.walker.birthDate = walker.birthDate;
 	        ret.walker.email = walker.email;
 	        ret.walker.telephone = walker.telephone;
+	        ret.walker.city = walker.city;
+	        ret.walker.about = walker.about;
 	        ret.walker.weight = walker.weight;
 	        ret.walker.height = walker.height;
 	        ret.walker.smoker = walker.smoker;
@@ -89,7 +91,7 @@ exports.read = function(req, res) {
 	        return res.status(200).jsonp(ret); 
 	    } else {
 	    	var query = Walker.findById(req.body.walkerID);
-	    	query.select('profileImage firstName lastName sex birthDate email telephone weight height smoker alcohol exercise stats');
+	    	query.select('profileImage firstName lastName sex birthDate email telephone city about weight height smoker alcohol exercise stats');
 	    	query.exec(function(err,search){
 	    		 if (err) {
                     var ret = {};
@@ -171,6 +173,8 @@ exports.updateInfo = function(req, res) {
         walker.sex = req.body.sex;
         walker.telephone = req.body.telephone;
         walker.profileImage = req.body.profileImage;
+        walker.city = req.body.city;
+        walker.about = req.body.about;
         walker.displayName = req.body.firstName + " " + req.body.lastName;
         walker.save(function(err) {
             if (err) {

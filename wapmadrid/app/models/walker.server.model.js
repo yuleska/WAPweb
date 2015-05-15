@@ -79,6 +79,12 @@ var WalkerSchema = new Schema({
         default: '',
         validate: [validateLocalStrategyPassword, 'Password should be longer']
     },
+    city:
+        type: String
+    },
+    about:
+        type: String
+    },
     salt: {
         type: String
     },
