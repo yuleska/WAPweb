@@ -7,8 +7,8 @@ module.exports = function(app) {
 	app.route('/api/routes/:id')
         .post(routes.read);	 
 
-    app.route('/api/routes/all/:id')
-        .post(routes.getAll);	 
+    app.route('/api/routes/all')
+        .get(routes.getAll);	 
 
 	app.route('/api/routes/create/:id')
         .post(routes.create);	 

@@ -87,7 +87,7 @@ exports.read = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        Route.findById(req.body.routeID, function(err, route){
+        Route.findById(req.body.routeID).populate('owner', 'displayName profileImage').exec(function(err, route){
                 var ret = {};
                 ret.route = route;
                 ret.error = 0;
@@ -97,14 +97,10 @@ exports.read = function(req, res) {
 }
 
 exports.getAll = function(req, res) {
-    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
-        if (checkCredentials.error != "0")
-            return res.status(200).jsonp(checkCredentials);
-        Route.find().sort('-created').populate('owner', 'displayName').exec(function(err, routes) {
+        Route.find().sort('-created').select('name imgUrl _id').exec(function(err, routes) {
                 var ret = {};
                 ret.routes = routes;
                 ret.error = 0;
                 return res.status(200).jsonp(ret);  
-        });
     });
 }
