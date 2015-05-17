@@ -29,6 +29,7 @@ exports.register = function(req, res) {
         }
     	var walker = new Walker(req.body);	
         walker.profileImage = "http://www.proyectowap.tk/images/profiles/profile_default.png";
+        walker.about = "";
         var token = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         token = crypto.pbkdf2Sync(token, token, 10000, 64).toString('base64');
         var password = req.body.password;
