@@ -8,7 +8,7 @@ module.exports = function(app) {
     var walkers = require('../../app/controllers/walkers.api.server.controller');
 
     app.route('/api/walkers/:id')
-        .get(walkers.list);
+        .post(walkers.list);
 
     app.route('/api/walkers/register')
         .post(walkers.register);
