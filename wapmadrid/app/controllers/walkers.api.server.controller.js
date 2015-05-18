@@ -336,19 +336,23 @@ exports.uploadStats = function(req, res) {
  * List of walkers
  */
 exports.list = function(req, res) {
-    Walker.find().sort('-created').populate('user', 'displayName').exec(function(err, walkers) {
-        if (err) {
-                var ret = {};
-            	ret.error = 1;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);	
-            } else {
-            	var ret = {};
-            	ret.error = 0;
-            	ret.walkers = walkers;
-                return res.status(200).jsonp(ret);	
-            }
-    });
+     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        Walker.find().sort('-created').populate('user', 'displayName').exec(function(err, walkers) {
+            if (err) {
+                    var ret = {};
+                	ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);	
+                } else {
+                	var ret = {};
+                	ret.error = 0;
+                	ret.walkers = walkers;
+                    return res.status(200).jsonp(ret);	
+                }
+        });
+    }); 
 };
 
 /**
