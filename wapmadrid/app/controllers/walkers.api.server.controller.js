@@ -184,7 +184,7 @@ exports.updateInfo = function(req, res) {
         walker.address = req.body.address;
     //    walker.profileImage = req.body.profileImage;
         walker.city = req.body.city;
-        walker.about = req.body.about;
+       // walker.about = req.body.about;
         walker.displayName = req.body.firstName + " " + req.body.lastName;
         walker.save(function(err) {
             if (err) {
