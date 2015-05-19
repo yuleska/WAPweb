@@ -1,0 +1,13 @@
+[Service]
+WorkingDirectory=/home/API/WAPweb/wapmadrid
+ExecStart=nodejs server.js 
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=wapmadrid
+User=ubuntu
+Group=ubuntu
+Environment='NODE_ENV=production'
+ 
+[Install]
+WantedBy=multi-user.target
