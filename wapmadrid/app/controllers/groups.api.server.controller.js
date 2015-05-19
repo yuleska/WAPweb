@@ -47,7 +47,7 @@ exports.getGroup = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName _id');
+        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName email _id').populate('route', 'name _id');
        query.exec( function(err, group) {
             if (err) {
                 var ret = {};

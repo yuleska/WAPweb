@@ -339,7 +339,7 @@ exports.list = function(req, res) {
      utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        Walker.find().sort('-created').populate('user', 'displayName').exec(function(err, walkers) {
+        Walker.find().select('displayName profileImage _id').exec(function(err, walkers) {
             if (err) {
                     var ret = {};
                 	ret.error = 1;
