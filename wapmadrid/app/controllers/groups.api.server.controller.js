@@ -56,6 +56,7 @@ exports.getGroup = function(req, res) {
                 return res.status(200).jsonp(ret);  
             } else {
                 var ret = {};
+                ret.member = alreadyMember(group.members,req.params.id);                
                 ret.error = 0;
                 ret.group = group;
                 delete ret.group.messages;
