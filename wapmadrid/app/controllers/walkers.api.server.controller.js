@@ -102,7 +102,7 @@ exports.read = function(req, res) {
 	        return res.status(200).jsonp(ret); 
 	    } else {
 	    	var query = Walker.findById(req.body.walkerID);
-	    	query.select('profileImage displayName firstName lastName sex birthDate email telephone city about weight height smoker alcohol exercise stats');
+	    	query.select('profileImage displayName firstName lastName address sex birthDate email telephone city about weight height smoker alcohol exercise stats');
 	    	query.exec(function(err,search){
 	    		 if (err) {
                     var ret = {};
