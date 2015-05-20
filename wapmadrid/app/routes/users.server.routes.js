@@ -15,7 +15,7 @@ module.exports = function(app) {
         .post(users.login);
 
      app.route('/api/cms/logout')
-        .post(users.logout);
+        .post(users.logout/:id);
 
     app.route('/api/cms/read/:id')
         .post(users.read);

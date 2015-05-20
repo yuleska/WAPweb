@@ -134,7 +134,7 @@ exports.registerWalker = function(req,res){
         query.exec(function (err, duplicate) {
             if (duplicate){
                 var ret = {};
-                ret.error = 5;
+                ret.error = 4;
                 ret.error_message = "Nombre de wappy en uso";
                 return res.status(200).jsonp(ret);  
             }
@@ -167,7 +167,7 @@ exports.registerWalker = function(req,res){
             });
         } else {
             var ret = {};
-            ret.error = 2;
+            ret.error = 5;
             ret.error_message = "Password demasiado corta";
             return res.status(200).jsonp(ret);  
         }
@@ -182,7 +182,7 @@ exports.listWalkers = function(req,res){
         query.exec(function (err, walkers) {
             if (err) {
                 var ret = {};
-                ret.error = 1;
+                ret.error = 4;
                 ret.error_message = err;
                 return res.status(200).jsonp(ret);  
             } else {
