@@ -178,7 +178,7 @@ exports.listWalkers = function(req,res){
     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = User.findById(req.params.id).populate('walkers.walkerID, _id profileImage displayName');
+        var query = User.findById(req.params.id).populate('walkers.walkerID', _'id profileImage displayName');
         query.exec(function (err, walkers) {
             if (err) {
                 var ret = {};
