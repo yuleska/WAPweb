@@ -470,6 +470,8 @@ exports.createGroup = function(req, res) {
                 return res.status(200).jsonp(ret);  
             } else {                    
                 var ret = {};
+                var groupCMS = {};
+                groupsCMS.groupID = group._id;
                 ret.error = 0;
                 return res.status(200).jsonp(ret);  
             }
@@ -481,7 +483,7 @@ exports.getGroup = function(req, res) {
    utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials); 
-        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName email _id').populate('route', 'name _id');
+        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName telephone email _id').populate('route', 'name _id');
         query.exec( function(err, group) {
             if (err) {
                 var ret = {};
@@ -510,7 +512,7 @@ exports.setGroupWalker = function(req, res) {
                 return res.status(200).jsonp(ret);  
             } else {
                 var members = {};
-                members.idMember  = walker._id;
+                members.idMember  = req.body.walkerID;
                 members.accepted = true;
                 group.members.push(members);
                 group.save(function(err) {
