@@ -55,6 +55,7 @@ var WalkerSchema = new Schema({
     },
     telephone: {
         type: String,
+        default: '',
         trim: true
     },
     email: {
@@ -66,6 +67,7 @@ var WalkerSchema = new Schema({
     },
     address:{
         type: String,
+        default: '',
         trim: true
     },
     username: {
@@ -80,13 +82,16 @@ var WalkerSchema = new Schema({
         validate: [validateLocalStrategyPassword, 'Password should be longer']
     },
     city: {
-        type: String
+        type: String,
+        default: '',
     },
     about: {
-        type: String
+        type: String,
+        default: '',
     },
     salt: {
-        type: String
+        type: String,
+        default: '',
     },
     token: {
         type: String
@@ -128,13 +133,16 @@ var WalkerSchema = new Schema({
         }
     }],
     height: {
-        type: Number
+        type: Number,
+        default: 0,
     },
     smoker: {
-        type: Number
+        type: Number,
+        default: 0,
     },
     alcohol: {
-        type: Number
+        type: Number,
+        default: 0,
     },
     stats: [{
         distance: {
