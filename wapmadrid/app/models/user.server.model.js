@@ -28,6 +28,9 @@ var UserSchema = new Schema({
     image:{
         type: String,
     },
+    email:{
+        type: String,
+    },
     name: {
         type: String,
         trim: true,

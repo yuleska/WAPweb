@@ -86,6 +86,7 @@ exports.read = function(req, res) {
         ret.telephone = user.telephone;
         ret.openingHours = user.openingHours;
         ret.telephone = user.telephone;
+        ret.email = user.email;
         ret.error = 0;
         return res.status(200).jsonp(ret); 
     });
@@ -133,7 +134,7 @@ exports.registerWalker = function(req,res){
         query.exec(function (err, duplicate) {
             if (duplicate){
                 var ret = {};
-                ret.error = 1;
+                ret.error = 5;
                 ret.error_message = "Nombre de wappy en uso";
                 return res.status(200).jsonp(ret);  
             }
