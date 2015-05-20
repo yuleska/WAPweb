@@ -387,7 +387,7 @@ exports.home = function(req, res) {
         query.select('name');
         query.exec(function(err,route){
             ret.route = route;
-            Routes.count(function(err,routesCount){
+            Route.count(function(err,routesCount){
                 ret.routesCount = routesCount;
                 var queryEvents = Event.find().populate('owner, name');
                 queryEvents.select('name text date owner');
