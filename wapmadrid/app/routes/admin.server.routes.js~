@@ -10,9 +10,6 @@ module.exports = function(app) {
 
     app.route('/api/admin/login')
         .post(admin.login);
-	
-	app.route('/api/admin/logout/:id')
-        .post(admin.logout);	
 
     app.route('/api/admin/cms/register/:id')
         .post(admin.registerCms);

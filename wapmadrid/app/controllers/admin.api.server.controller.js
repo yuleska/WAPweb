@@ -181,6 +181,26 @@ exports.login = function(req, res) {
     });
 };
 
+exports.logout = function(req, res) {
+    utils.checkCredentialsAdmin(req.params.id,req.body.token,function (checkCredentials,admin){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials); 
+        admin.token = null;
+        admin.save(function(err) {
+            if (err) {
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+    });
+}
+
 exports.updatePassword = function(req, res) {
     utils.checkCredentialsAdmin(req.params.id,req.body.token,function (checkCredentials,admin){
         if (checkCredentials.error != "0")
