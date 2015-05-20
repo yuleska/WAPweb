@@ -138,39 +138,44 @@ exports.registerWalker = function(req,res){
                 ret.error_message = "Nombre de wappy en uso";
                 return res.status(200).jsonp(ret);  
             }
+            delete req.body.token;
+            var weight = {};
+            weight.value = req.body.weight;
+            weight.imc = req.body.weight / (req.body.height * req.body.height);            
+            delete req.body.weight;
+            var walker = new Walker(req.body);  
+            walker.weight.push(weight);
+            var password = req.body.password;
+            if (password && password.length > 6) {
+                var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+                salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
+                walker.password = walker.hashPassword(password,salt);
+                walker.salt = salt;
+                walker.displayName = req.body.firstName + " " + req.body.lastName;
+                walker.user = user._id;
+                walker.save(function(err) {
+                    if (err) {
+                        var ret = {};
+                        ret.error = err.code;
+                        ret.error_message = err;
+                        return res.status(200).jsonp(ret);  
+                    } else {
+                        var newWalker = {};
+                        newWalker.walkerID = walker._id;
+                        user.walkers.push(newWalker);
+                        user.save();
+                        var ret = {};
+                        ret.error = 0;
+                        return res.status(200).jsonp(ret);  
+                    }
+                });
+            } else {
+                var ret = {};
+                ret.error = 5;
+                ret.error_message = "Password demasiado corta";
+                return res.status(200).jsonp(ret);  
+            }
         });
-        delete req.body.token;
-        var walker = new Walker(req.body);  
-        var password = req.body.password;
-        if (password && password.length > 6) {
-            var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
-            salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
-            walker.password = walker.hashPassword(password,salt);
-            walker.salt = salt;
-            walker.displayName = req.body.firstName + " " + req.body.lastName;
-            walker.user = user._id;
-            walker.save(function(err) {
-                if (err) {
-                    var ret = {};
-                    ret.error = err.code;
-                    ret.error_message = err;
-                    return res.status(200).jsonp(ret);  
-                } else {
-                    var newWalker = {};
-                    newWalker.walkerID = walker._id;
-                    user.walkers.push(newWalker);
-                    user.save();
-                    var ret = {};
-                    ret.error = 0;
-                    return res.status(200).jsonp(ret);  
-                }
-            });
-        } else {
-            var ret = {};
-            ret.error = 5;
-            ret.error_message = "Password demasiado corta";
-            return res.status(200).jsonp(ret);  
-        }
     });
 }
 
@@ -398,6 +403,129 @@ exports.home = function(req, res) {
                     return res.status(200).jsonp(ret); 
                 });
             });
+        });
+    });
+}
+
+exports.groupsByRoute = function(req, res) {
+    utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials); 
+        var query = Groups.find();
+        query.where('route').equals(req.body.routeID);
+        query.select('_id name level schedule');
+        query.exec(function (err, groups) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                ret.groups = groups;
+                return res.status(200).jsonp(ret);                  
+            }
+        }); 
+        
+    });
+}
+
+exports.listGroups = function(req, res) {
+    utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials); 
+        Groups.populate(user, {path: 'groups.groupsID', select: 'image name _id'}, function (err, groups) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                ret.groups = groups.groups;
+                return res.status(200).jsonp(ret);  
+            }
+        }); 
+        
+    });
+}
+
+exports.createGroup = function(req, res) {
+     utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials); 
+        var group = new Group(req.body);
+        var members = {};
+        group.captain = req.body.captain;
+        members.idMember  = req.body.captain;
+        members.accepted = true;
+        group.members.push(members);
+        group.save(function(err) {
+            if (err) {
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {                    
+                var ret = {};
+                ret.error = 0;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+    });
+}
+
+exports.getGroup = function(req, res) {
+   utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials); 
+        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName email _id').populate('route', 'name _id');
+        query.exec( function(err, group) {
+            if (err) {
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};               
+                ret.error = 0;
+                ret.group = group;
+                return res.status(200).jsonp(ret);  
+            }
+        });
+    });
+}
+
+exports.setGroupWalker = function(req, res) {
+   utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials); 
+        Group.findById(req.body.groupID, function(err, group) {
+            if (alreadyMember(group.members,req.params.id)){
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = "Ya es miembro de este grupo";
+                return res.status(200).jsonp(ret);  
+            } else {
+                var members = {};
+                members.idMember  = walker._id;
+                members.accepted = true;
+                group.members.push(members);
+                group.save(function(err) {
+                    if (err) {
+                        var ret = {};
+                        ret.error = 5;
+                        ret.error_message = err;
+                        return res.status(200).jsonp(ret);  
+                    } else {
+                        var ret = {};
+                        ret.error = 0;
+                        return res.status(200).jsonp(ret);  
+                    }
+                });
+            }
         });
     });
 }

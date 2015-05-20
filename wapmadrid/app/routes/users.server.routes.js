@@ -46,5 +46,20 @@ module.exports = function(app) {
 
     app.route('/api/cms/home/:id')
         .post(users.home);
+
+    app.route('/api/cms/group/route/:id')
+        .post(users.groupsByRoute);
+
+    app.route('/api/cms/group/list/:id')
+        .post(users.listGroups);
+
+    app.route('/api/cms/group/create/:id')
+        .post(users.createGroup);
+
+    app.route('/api/cms/group/read/:id')
+        .post(users.getGroup);
+
+    app.route('/api/cms/walker/group/:id')
+        .post(users.setGroupWalker);
    
 };
