@@ -25,8 +25,11 @@ exports.create = function(req, res) {
         var coordinatesJSON = JSON.parse(req.body.coordinates);
         var route = new Route();
         route.name = req.body.name;
-        route.distance = req.body.distance;     
-        route.coordinates.push(coordinatesJSON.coordinates[0]);
+        route.distance = req.body.distance;   
+        var i = 0;
+        for (i = 0; i < coordinatesJSON.coordinates.length; i++) {
+            route.coordinates.push(coordinatesJSON.coordinates[i]);
+        }        
         route.owner = walker._id; 
         route.save(function(err) {
                 if (err) {
@@ -97,7 +100,7 @@ exports.read = function(req, res) {
 }
 
 exports.getAll = function(req, res) {
-        Route.find().sort('-created').select('name imgUrl _id').exec(function(err, routes) {
+        Route.find().sort('-created').select('name coordinates _id').exec(function(err, routes) {
                 var ret = {};
                 ret.routes = routes;
                 ret.error = 0;
