@@ -100,7 +100,7 @@ exports.read = function(req, res) {
 }
 
 exports.getAll = function(req, res) {
-        Route.find().sort('-created').select('name coordinates _id').exec(function(err, routes) {
+        Route.find().select('name distance coordinates _id').exec(function(err, routes) {
                 var ret = {};
                 ret.routes = routes;
                 ret.error = 0;

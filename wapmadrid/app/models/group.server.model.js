@@ -11,7 +11,8 @@ var mongoose = require('mongoose'),
  */
 var GroupSchema = new Schema({
     image:{
-        type: String
+        type: String,
+        default: ''
     },
     name: {
         type: String,
@@ -33,10 +34,12 @@ var GroupSchema = new Schema({
         }
     }],
     schedule: {
-        type: String
+        type: String,
+        default: ''
     },
     level: {
-        type: Number
+        type: Number,
+        default: 1
     },
     created: {
         type: Date,
@@ -56,7 +59,8 @@ var GroupSchema = new Schema({
             default: Date.now
         },
         text: {
-            type: String
+            type: String,
+        	default: ''
         }
     }],
 });

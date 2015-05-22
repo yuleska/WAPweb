@@ -27,9 +27,11 @@ var validateLocalStrategyPassword = function(password) {
 var UserSchema = new Schema({
     image:{
         type: String,
+        default: ''
     },
     email:{
         type: String,
+        default: ''
     },
     name: {
         type: String,

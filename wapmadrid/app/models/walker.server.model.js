@@ -26,7 +26,8 @@ var validateLocalStrategyPassword = function(password) {
  */
 var WalkerSchema = new Schema({
     profileImage:{
-        type: String,
+        type: String,,
+        default: 'http://www.proyectowap.tk/images/profiles/profile_default.png'
     }
     ,firstName: {
         type: String,
@@ -42,6 +43,7 @@ var WalkerSchema = new Schema({
     },
     displayName: {
         type: String,
+        default: '',
         trim: true
     },
     birthDate: {

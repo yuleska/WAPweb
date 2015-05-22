@@ -22,17 +22,21 @@ var RouteSchema = new Schema({
     },
     coordinates: [{
         _lat: {
-            type: Number
+            type: Number,
+            default: 0
         },
         _long: {
-            type: Number
+            type: Number,
+            default: 0
         }
     }],
     distance: {
-        type: Number
+        type: Number,
+        default: 0
     },
     imgUrl: {
-        type: String
+        type: String,
+        default: ''
     },
     created: {
         type: Date,
