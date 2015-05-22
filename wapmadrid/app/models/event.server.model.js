@@ -21,8 +21,8 @@ var EventSchema = new Schema({
         ref: 'User'
     },
     date: {
-        type: Date,
-        default: Date.now
+        type: String,
+	default: ''
     },
     created: {
         type: Date,

@@ -134,7 +134,7 @@ exports.readAllCms = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
         var query = User.find().populate('route');
-        query.select('_idname image username address telephone openingHours route');
+        query.select('_id name image username address telephone openingHours route');
         query.exec(function (err, user) {
               if (err) {
                 var ret = {};

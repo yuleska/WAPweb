@@ -6,7 +6,7 @@
 
  var _ = require('lodash'),
     mongoose = require('mongoose'),
-    Walker = mongoose.model('Event'),
+    Event = mongoose.model('Event'),
     User = mongoose.model('User'),
     utils = require('./utils.js');
 
@@ -15,7 +15,7 @@
  * Register Walker
  */
 exports.getEvents = function(req, res) {
-    Events.find().sort('-created').populate('owner', 'name image _id').exec(function(err, walkers) {
+    Event.find().sort('-created').populate('owner', 'name image _id').exec(function(err, events) {
         if (err) {
                 var ret = {};
                 ret.error = 1;

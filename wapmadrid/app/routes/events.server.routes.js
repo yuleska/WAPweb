@@ -10,6 +10,6 @@ module.exports = function(app) {
 
     app.route('/api/events')
         .get(events.getEvents);
-    app.route('/api/events')
+    app.route('/api/events/:id')
         .post(events.createEvent);
 };
