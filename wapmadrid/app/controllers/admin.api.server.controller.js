@@ -69,7 +69,7 @@ exports.updateCms = function(req, res) {
 			}
             var queryDuplicate = User.findOne({ 'username': req.body.username });
             queryDuplicate.exec(function (err, duplicate) {
-                if (duplicate && !duplicate._id.equals(user._id))zº{
+                if (duplicate && !duplicate._id.equals(user._id)){
                     var ret = {};
                     ret.error = 4;
                     ret.error_message = "Nombre de centro en uso";
