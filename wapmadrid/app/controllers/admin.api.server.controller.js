@@ -83,7 +83,7 @@ exports.updateCms = function(req, res) {
                 user.openingHours = req.body.openingHours;
                 user.route = req.body.route;
 				var password = req.body.password;
-                if (password && !password.equals("")){
+                if (password && password != "" ){
                     if (password.length > 6) {
                         var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
                         salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
