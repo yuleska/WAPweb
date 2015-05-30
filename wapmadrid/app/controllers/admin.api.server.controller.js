@@ -61,9 +61,15 @@ exports.updateCms = function(req, res) {
             return res.status(200).jsonp(checkCredentials);
         var query = User.findById(req.body.userID);
         query.exec(function (err, user) {
+			if (user == null){
+				var ret = {};
+				ret.error = 6;
+				ret.error_message = "Id de CMS no existe";
+				return res.status(200).jsonp(ret);  
+			}
             var queryDuplicate = User.findOne({ 'username': req.body.username });
             queryDuplicate.exec(function (err, duplicate) {
-                if (duplicate && !duplicate._id.equals(user._id)){
+                if (duplicate && !duplicate._id.equals(user._id))zº{
                     var ret = {};
                     ret.error = 4;
                     ret.error_message = "Nombre de centro en uso";
