@@ -63,12 +63,12 @@ exports.updateCms = function(req, res) {
         query.exec(function (err, user) {
             var queryDuplicate = User.findOne({ 'username': req.body.username });
             queryDuplicate.exec(function (err, duplicate) {
-                if (duplicate){
+                if (duplicate && !duplicate._id.equals(user._id){
                     var ret = {};
                     ret.error = 4;
                     ret.error_message = "Nombre de centro en uso";
                     return res.status(200).jsonp(ret);  
-                }
+                }				
                 user.name = req.body.name;
                 user.image = req.body.image;
                 user.username = req.body.username;
@@ -112,7 +112,7 @@ exports.readCms = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
         var query = User.findById(req.body.userID).populate('route');
-        query.select('name image username address telephone openingHours route');
+        query.select('name image username address telephone email openingHours route');
         query.exec(function (err, user) {
               if (err) {
                 var ret = {};
