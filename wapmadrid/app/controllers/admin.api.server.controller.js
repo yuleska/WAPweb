@@ -82,11 +82,12 @@ exports.updateCms = function(req, res) {
                 user.telephone = req.body.telephone;
                 user.openingHours = req.body.openingHours;
                 user.route = req.body.route;
-                if (password && !req.body.password.equals("")){
+				var password = req.body.password;
+                if (password && !password.equals("")){
                     if (password.length > 6) {
                         var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
                         salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
-                        user.password = user.hashPassword(req.body.password,salt);
+                        user.password = user.hashPassword(password,salt);
                         user.salt = salt;
                     } else {
                         var ret = {};
