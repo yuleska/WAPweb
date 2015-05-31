@@ -75,21 +75,25 @@ exports.register = function(req, res) {
  * Login User
  */
 exports.read = function(req, res) {
-    utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
+    utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user_in){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var ret = {};
-        ret.image = user.image;
-        ret.name = user.name;
-        ret.username = user.username;
-        ret.address = user.address;
-        ret.telephone = user.telephone;
-        ret.openingHours = user.openingHours;
-        ret.telephone = user.telephone;
-        ret.email = user.email;
-        ret.error = 0;
-        return res.status(200).jsonp(ret); 
-    });
+		var query = User.findById(req.params.id).populate('route', 'name _id');
+		query.exec(function (err, user) {
+			var ret = {};
+			ret.image = user.image;
+			ret.name = user.name;
+			ret.username = user.username;
+			ret.address = user.address;
+			ret.telephone = user.telephone;
+			ret.openingHours = user.openingHours;
+			ret.telephone = user.telephone;
+			ret.email = user.email;
+			ret.route = user.route;
+			ret.error = 0;
+			return res.status(200).jsonp(ret); 
+		}); 
+	});
 };
 
 /**
