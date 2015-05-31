@@ -82,6 +82,7 @@ exports.updateCms = function(req, res) {
                 user.telephone = req.body.telephone;
                 user.openingHours = req.body.openingHours;
                 user.route = req.body.route;
+				user.email = req.body.email;
 				var password = req.body.password;
                 if (password && password != "" ){
                     if (password.length > 6) {
