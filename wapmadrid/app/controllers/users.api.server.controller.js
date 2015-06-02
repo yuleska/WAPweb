@@ -471,7 +471,7 @@ exports.createGroup = function(req, res) {
             } else {                    
                 var ret = {};
                 var groupCMS = {};
-                groupsCMS.groupID = group._id;
+                groupCMS.groupID = group._id;
                 ret.error = 0;
                 return res.status(200).jsonp(ret);  
             }
