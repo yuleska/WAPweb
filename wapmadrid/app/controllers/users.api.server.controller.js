@@ -477,6 +477,9 @@ exports.createGroup = function(req, res) {
             } else {                    
                 var ret = {};
                 ret.error = 0;
+                var groups = {};
+                groups.groupsID = group._id;
+                user.groups.push(groups);
                 return res.status(200).jsonp(ret);  
             }
         });
