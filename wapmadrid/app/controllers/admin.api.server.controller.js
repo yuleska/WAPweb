@@ -61,14 +61,20 @@ exports.updateCms = function(req, res) {
             return res.status(200).jsonp(checkCredentials);
         var query = User.findById(req.body.userID);
         query.exec(function (err, user) {
+			if (user == null){
+				var ret = {};
+				ret.error = 6;
+				ret.error_message = "Id de CMS no existe";
+				return res.status(200).jsonp(ret);  
+			}
             var queryDuplicate = User.findOne({ 'username': req.body.username });
             queryDuplicate.exec(function (err, duplicate) {
-                if (duplicate){
+                if (duplicate && !duplicate._id.equals(user._id)){
                     var ret = {};
                     ret.error = 4;
                     ret.error_message = "Nombre de centro en uso";
                     return res.status(200).jsonp(ret);  
-                }
+                }				
                 user.name = req.body.name;
                 user.image = req.body.image;
                 user.username = req.body.username;
@@ -76,11 +82,13 @@ exports.updateCms = function(req, res) {
                 user.telephone = req.body.telephone;
                 user.openingHours = req.body.openingHours;
                 user.route = req.body.route;
-                if (password && !req.body.password.equals("")){
+				user.email = req.body.email;
+				var password = req.body.password;
+                if (password && password != "" ){
                     if (password.length > 6) {
                         var salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
                         salt = crypto.pbkdf2Sync(salt, salt, 10000, 64).toString('base64');
-                        user.password = user.hashPassword(req.body.password,salt);
+                        user.password = user.hashPassword(password,salt);
                         user.salt = salt;
                     } else {
                         var ret = {};
@@ -112,7 +120,7 @@ exports.readCms = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
         var query = User.findById(req.body.userID).populate('route');
-        query.select('name image username address telephone openingHours route');
+        query.select('name image username address telephone email openingHours route');
         query.exec(function (err, user) {
               if (err) {
                 var ret = {};
