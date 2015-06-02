@@ -440,7 +440,7 @@ exports.listGroups = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials); 
     //    Group.populate(user, {path: 'groups.groupsID', select: 'image name _id'}, function (err, groups) {
-        var query = User.findById(req.params.id).populate('groups.groupsID');
+        var query = User.findById(req.params.id).populate('groups.groupsID', 'image name _id');
         query.exec(function(err,groups){       
             if (err) {
                 var ret = {};
@@ -480,6 +480,7 @@ exports.createGroup = function(req, res) {
                 var groups = {};
                 groups.groupsID = group._id;
                 user.groups.push(groups);
+                user.save();
                 return res.status(200).jsonp(ret);  
             }
         });
