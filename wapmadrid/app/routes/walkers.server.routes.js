@@ -9,6 +9,9 @@ module.exports = function(app) {
 
     app.route('/api/walkers/list/:id')
         .post(walkers.list);
+        
+    app.route('/api/cms/list/:id')
+        .post(walkers.listCMS);
 
     app.route('/api/walkers/register')
         .post(walkers.register);

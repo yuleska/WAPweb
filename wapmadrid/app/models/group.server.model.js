@@ -63,6 +63,15 @@ var GroupSchema = new Schema({
         	default: ''
         }
     }],
+    stats: [{
+        distance: {
+            type: Number
+        },
+        date: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 });
 
 mongoose.model('Group', GroupSchema);

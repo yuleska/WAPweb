@@ -330,6 +330,49 @@ exports.deleteGroup = function(req, res) {
     }); 
 }
 
+exports.sendStats = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        Group.findById(req.body.groupID, function(err, group) {
+            if (!group.captain.equals(walker._id)){
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = "No eres el capitan del grupo";
+                return res.status(200).jsonp(ret);  
+            }
+            var distance = req.body.distance;  
+            var membersJSON = JSON.parse(req.body.members);
+            var timeSpent = req.body.timeSpent;
+
+            var nMembers = membersJSON.members.length;
+            var stats = {};
+            stats.distance = distance * nMembers;
+            group.stats.push(stats);
+            group.save();
+
+            for (i = 0; i < nMembers; i++) {
+                route.coordinates.push(coordinatesJSON.coordinates[i]);
+                var query = Walker.findById(membersJSON.members[i]);
+                query.exec(function (err,walker){
+                    var peso = walker.weight[walker.weight.length-1].value;
+                    var kcal = (2/3) * peso * distance;
+                    var stats = {};
+                    stats.distance = distance;
+                    stats.kcal = kcal;
+                    walker.stats.push(stats);
+                    walker.save();
+                });
+            }  
+        var ret = {};
+        ret.error = 0;
+        return res.status(200).jsonp(ret);              
+        });
+    }); 
+}
+
+
+
 
 
 function alreadyMember (members, id){

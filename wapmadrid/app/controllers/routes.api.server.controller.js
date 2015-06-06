@@ -22,7 +22,7 @@ exports.create = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-	var coordinatesJSON = JSON.parse(req.body.coordinates);
+	    var coordinatesJSON = JSON.parse(req.body.coordinates);
         var route = new Route();
         route.name = req.body.name;
         route.distance = req.body.distance;   

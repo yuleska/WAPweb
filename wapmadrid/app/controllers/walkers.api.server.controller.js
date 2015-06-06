@@ -356,6 +356,29 @@ exports.list = function(req, res) {
 };
 
 /**
+ * List of walkers
+ */
+exports.listCMS = function(req, res) {
+     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        User.find().select('image name _id').exec(function(err, users) {
+            if (err) {
+                    var ret = {};
+                    ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    var ret = {};
+                    ret.error = 0;
+                    ret.users = users;
+                    return res.status(200).jsonp(ret);  
+                }
+        });
+    }); 
+};
+
+/**
  * Delete an Walkerswalkersapicontroller
  */
 exports.getCms = function(req, res) {
@@ -382,20 +405,25 @@ exports.setCms = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        walker.user = req.body.cms;
-        walker.save(function(err) {
-            if (err) {
-                var ret = {};
-                ret.error = 1;
-                ret.error_message = err;
-                return res.status(200).jsonp(ret);  
-            } else {
-                var ret = {};
-                ret.error = 0;
-                return res.status(200).jsonp(ret);  
-            }
-        });
-    });     
+        var query = User.findById(req.body.cms);
+        query.exec(function(err,user){
+            var newWalker = {};
+            newWalker.walkerID = walker._id;
+            user.walkers.push(newWalker);
+            user.save(function(err) {
+                if (err) {
+                    var ret = {};
+                    ret.error = 1;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {
+                    var ret = {};
+                    ret.error = 0;
+                    return res.status(200).jsonp(ret);  
+                }
+            });
+        });   
+    });  
 };
 
 exports.getGroups = function(req, res) {
