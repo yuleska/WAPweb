@@ -385,18 +385,21 @@ exports.getCms = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = User.findById(walkers.user);
-        query.select('image displayName address telephone openingHours');
+        var query = User.findById();
+        query.where('walkers.walkerID').equals(walker._id);
+        query.select('image name address telephone openingHours email');
+        query.populate('route', 'name coordinates distance')
         query.exec(function(err, cms) { 
             var ret = {};
             if(err) {
-                ret.error = 1;
+                ret.error = 4;
                 ret.error_message = err;
                 return res.status(200).jsonp(ret);
+            } else{
+                ret.error = 0;
+                ret.cms = cms;
+                return res.status(200).jsonp(ret);
             }
-            ret.error = 0;
-            ret.cms = cms;
-            return res.status(200).jsonp(ret);
         });
     });
 };
