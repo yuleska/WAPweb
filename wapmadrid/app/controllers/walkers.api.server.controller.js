@@ -385,7 +385,7 @@ exports.getCms = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = User.findById(walker.user);
+        var query = User.findById(walkers.user);
         query.select('image displayName address telephone openingHours');
         query.exec(function(err, cms) { 
             var ret = {};
