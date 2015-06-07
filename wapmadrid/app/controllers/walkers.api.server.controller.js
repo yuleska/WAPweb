@@ -385,7 +385,7 @@ exports.getCms = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = User.findById();
+        var query = User.find();
         query.where('walkers.walkerID').equals(walker._id);
         query.select('image name address telephone openingHours email');
         query.populate('route', 'name coordinates distance');
