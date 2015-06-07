@@ -388,7 +388,7 @@ exports.getCms = function(req, res) {
         var query = User.findById();
         query.where('walkers.walkerID').equals(walker._id);
         query.select('image name address telephone openingHours email');
-        query.populate('route', 'name coordinates distance')
+        query.populate('route', 'name coordinates distance');
         query.exec(function(err, cms) { 
             var ret = {};
             if(err) {
