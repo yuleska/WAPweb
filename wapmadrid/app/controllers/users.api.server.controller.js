@@ -440,7 +440,7 @@ exports.listGroups = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials); 
     //    Group.populate(user, {path: 'groups.groupsID', select: 'image name _id'}, function (err, groups) {
-        var query = User.findById(req.params.id).populate('groups.groupsID', 'image name _id');
+        var query = User.findById(req.params.id).populate('groups.groupsID', 'image name schedule level _id');
         query.exec(function(err,groups){       
             if (err) {
                 var ret = {};
