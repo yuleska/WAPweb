@@ -250,7 +250,7 @@ exports.updateInfoWalker = function(req, res) {
             walker.save(function(err) {
                 if (err) {
                     var ret = {};
-                    ret.error = 1;
+                    ret.error = 4;
                     ret.error_message = err;
                     return res.status(200).jsonp(ret);  
                 } else {

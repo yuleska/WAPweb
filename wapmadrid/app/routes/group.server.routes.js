@@ -8,6 +8,9 @@ module.exports = function(app) {
 	app.route('/api/groups/:id')
         .post(groups.getGroup);
 
+    app.route('/api/groups/list/:id')
+        .post(groups.listGroups);
+
     app.route('/api/groups/:id')
         .delete(groups.deleteGroup);
 

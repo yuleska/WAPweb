@@ -83,7 +83,7 @@ exports.join = function(req, res) {
             } else {
                 var members = {};
                 members.idMember  = walker._id;
-                members.accepted = false;
+                members.accepted = true;
                 group.members.push(members);
                 group.save(function(err) {
                     if (err) {
@@ -371,7 +371,31 @@ exports.sendStats = function(req, res) {
     }); 
 }
 
+listGroups
 
+exports.listGroups = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+      var query = Group.find();
+      query.select('captain image name route members');
+      query.populate('route', 'name');
+         query.exec(function (err, groups) {
+            if (err) {
+                var ret = {};
+                ret.error = 1;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var ret = {};
+                ret.error = 0;
+                ret.groups = groups;
+                return res.status(200).jsonp(ret);  
+                
+            }
+        }); 
+    }); 
+};
 
 
 
