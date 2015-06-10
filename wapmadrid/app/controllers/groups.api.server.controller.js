@@ -371,8 +371,6 @@ exports.sendStats = function(req, res) {
     }); 
 }
 
-listGroups
-
 exports.listGroups = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
