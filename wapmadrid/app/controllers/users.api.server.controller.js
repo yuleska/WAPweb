@@ -240,6 +240,13 @@ exports.updateInfoWalker = function(req, res) {
             walker.telephone = req.body.telephone;
             walker.profileImage = req.body.profileImage;
             walker.displayName = req.body.firstName + " " + req.body.lastName;
+            var weight = {};
+            weight.value = req.body.weight;
+            weight.imc = req.body.weight / (req.body.height * req.body.height);
+            walker.weight.push(weight);
+            walker.height = req.body.height;
+            walker.smoker = req.body.smoker;
+            walker.alcohol = req.body.smoker;
             walker.save(function(err) {
                 if (err) {
                     var ret = {};
@@ -491,7 +498,7 @@ exports.getGroup = function(req, res) {
    utils.checkCredentialsUser(req.params.id,req.body.token,function (checkCredentials,user){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials); 
-        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName telephone email _id').populate('route', 'name _id');
+        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName telephone email stats messages _id').populate('route', 'name _id');
         query.exec( function(err, group) {
             if (err) {
                 var ret = {};

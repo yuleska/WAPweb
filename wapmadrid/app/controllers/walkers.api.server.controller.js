@@ -459,8 +459,8 @@ exports.getRoutes = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
         var query = Route.find();
-        query.where('owner').equals(walker._id);
-        query.select('_id name coordinates distance')
+       // query.where('owner').equals(walker._id);
+        query.select('_id name');
         query.exec(function (err, routes) {
             if (err) {
                 var ret = {};
