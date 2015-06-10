@@ -374,7 +374,7 @@ exports.readWalker = function(req, res) {
             return res.status(200).jsonp(checkCredentials); 
     
         var query = Walker.findById(req.body.walkerID);
-        query.select('username profileImage firstName lastName sex birthDate email telephone address city about weight height smoker alcohol exercise stats');
+        query.select('username profileImage firstName lastName sex birthDate email telephone address city about weight height smoker alcohol exercise stats diet');
         query.exec(function(err,search){
              if (err) {
                 var ret = {};
