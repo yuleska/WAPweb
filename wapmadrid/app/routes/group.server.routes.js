@@ -43,4 +43,7 @@ module.exports = function(app) {
 
     app.route('/api/groups/stats/:id')
         .put(groups.sendStats);
+
+    app.route('/api/groups/stats/:id')
+        .post(groups.getStats);
 };

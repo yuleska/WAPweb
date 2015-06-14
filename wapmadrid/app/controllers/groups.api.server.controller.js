@@ -47,7 +47,7 @@ exports.getGroup = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName email _id').populate('route', 'name _id');
+        var query = Group.findById(req.body.groupID).populate('captain', 'profileImage displayName email stats _id').populate('route', 'name _id coordinates distance');
        query.exec( function(err, group) {
             if (err) {
                 var ret = {};
@@ -341,6 +341,7 @@ exports.sendStats = function(req, res) {
                 ret.error_message = "No eres el capitan del grupo";
                 return res.status(200).jsonp(ret);  
             }
+            console.log(req.body);
             var distance = req.body.distance;  
             var membersJSON = JSON.parse(req.body.members);
             var timeSpent = req.body.timeSpent;
@@ -352,8 +353,7 @@ exports.sendStats = function(req, res) {
             group.save();
 
             for (i = 0; i < nMembers; i++) {
-                route.coordinates.push(coordinatesJSON.coordinates[i]);
-                var query = Walker.findById(membersJSON.members[i]);
+                var query = Walker.findById(membersJSON.members[i].id);
                 query.exec(function (err,walker){
                     var peso = walker.weight[walker.weight.length-1].value;
                     var kcal = (2/3) * peso * distance;
@@ -370,6 +370,19 @@ exports.sendStats = function(req, res) {
         });
     }); 
 }
+
+xports.getStats = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        Group.findById(req.body.groupID, function(err, group) {
+            var ret = {};
+            ret.error = 0;
+            ret.stats = group.stats;
+            return res.status(200).jsonp(ret);    
+        }); 
+    }); 
+}   
 
 exports.listGroups = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
