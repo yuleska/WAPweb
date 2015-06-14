@@ -371,7 +371,7 @@ exports.sendStats = function(req, res) {
     }); 
 }
 
-xports.getStats = function(req, res) {
+exports.getStats = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
