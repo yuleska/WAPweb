@@ -351,7 +351,7 @@ exports.sendStats = function(req, res) {
             stats.distance = distance * nMembers;
             group.stats.push(stats);
             group.save();
-
+            var i = 0;
             for (i = 0; i < nMembers; i++) {
                 var query = Walker.findById(membersJSON.members[i].id);
                 query.exec(function (err,walker){
