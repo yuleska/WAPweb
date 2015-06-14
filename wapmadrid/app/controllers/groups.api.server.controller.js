@@ -341,7 +341,6 @@ exports.sendStats = function(req, res) {
                 ret.error_message = "No eres el capitan del grupo";
                 return res.status(200).jsonp(ret);  
             }
-            console.log(req.body);
             var distance = req.body.distance;  
             var membersJSON = JSON.parse(req.body.members);
             var timeSpent = req.body.timeSpent;
@@ -349,7 +348,11 @@ exports.sendStats = function(req, res) {
             var nMembers = membersJSON.members.length;
             var stats = {};
             stats.distance = distance * nMembers;
+            console.log("****STATS****");
+            console.log(stats);
             group.stats.push(stats);
+            console.log("****GROUP-STATS****");
+            console.log(group.stats);
             group.save();
             var i = 0;
             for (i = 0; i < nMembers; i++) {
