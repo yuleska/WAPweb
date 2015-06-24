@@ -12,8 +12,12 @@
     User = mongoose.model('User'),
     Group = mongoose.model('Group'),
     Route = mongoose.model('Route'),
+    fs = require('fs'),
     utils = require('./utils.js');
 
+
+var SERVER_PATH = '/var/www/ftp/images/profiles/';
+var SERVER_URL = 'http://www.proyectowap.tk/images/profiles/';
 
 /**
  * Register Walker
@@ -28,6 +32,9 @@ exports.create = function(req, res) {
         members.idMember  = walker._id;
         members.accepted = true;
         group.members.push(members);
+        var imageName = group._id + ".jpg";
+        group.image = SERVER_URL + imageName;
+        base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
         group.save(function(err) {
                 if (err) {
                     var ret = {};
@@ -41,6 +48,53 @@ exports.create = function(req, res) {
                 }
             });
     });
+}
+
+/**
+ * Register Walker
+ */
+exports.update = function(req, res) {
+    utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
+        if (checkCredentials.error != "0")
+            return res.status(200).jsonp(checkCredentials);
+        var query = Group.findById(req.body.groupID);
+        query.exec( function(err, group) {
+            if (err) {
+                var ret = {};
+                ret.error = 4;
+                ret.error_message = err;
+                return res.status(200).jsonp(ret);  
+            } else {
+                var imageName = group._id + ".jpg";
+                group.image = SERVER_URL + imageName;
+                base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
+                group.name = req.body.name;
+                group.schedule = req.body.schedule;
+                group.level = req.body.level;
+                group.route = req.body.route;
+                group.save(function(err) {
+                if (err) {
+                    var ret = {};
+                    ret.error = 5;
+                    ret.error_message = err;
+                    return res.status(200).jsonp(ret);  
+                } else {                    
+                    var ret = {};
+                    ret.error = 0;
+                    return res.status(200).jsonp(ret);  
+                }
+            });
+            }
+        });           
+    });
+}
+
+function base64_decode(base64str, file) {
+    // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
+    var bitmap = new Buffer(base64str, 'base64');
+    // write buffer to file
+    fs.writeFileSync(file, bitmap);
+    
 }
 
 exports.getGroup = function(req, res) {

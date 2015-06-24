@@ -17,6 +17,9 @@ module.exports = function(app) {
     app.route('/api/groups/create/:id')
         .post(groups.create);
 
+    app.route('/api/groups/update/:id')
+        .post(groups.update);
+
     app.route('/api/groups/join/:id')
         .post(groups.join);
 

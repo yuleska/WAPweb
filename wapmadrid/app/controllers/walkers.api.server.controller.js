@@ -180,25 +180,23 @@ function base64_decode(base64str, file) {
     var bitmap = new Buffer(base64str, 'base64');
     // write buffer to file
     fs.writeFileSync(file, bitmap);
-    console.log('******** File created from base64 encoded string ********');
+    
 }
 
 exports.updateInfo = function(req, res) {
     utils.checkCredentials(req.params.id,req.body.token,function (checkCredentials,walker){
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
-	console.log(req.body);
         walker.firstName = req.body.firstName;
         walker.lastName = req.body.lastName;       
         walker.email = req.body.email;
         walker.telephone = req.body.telephone;
         walker.address = req.body.address;
-	var imageName = req.body.firstName + ".jpg";
-//	var options = {filename: imageName}; 
-//	var imageData = new Buffer(req.body.profileImage, 'base64'); 
-        walker.profileImage = SERVER_URL + imageName;
-	base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
-        walker.city = req.body.city;
+	    var imageName = walker._id + ".jpg";
+
+       walker.profileImage = SERVER_URL + imageName;
+	   base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
+       walker.city = req.body.city;
        // walker.about = req.body.about;
         walker.displayName = req.body.firstName + " " + req.body.lastName;
         walker.save(function(err) {
