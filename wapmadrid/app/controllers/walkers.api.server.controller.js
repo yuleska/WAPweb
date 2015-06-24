@@ -192,10 +192,11 @@ exports.updateInfo = function(req, res) {
         walker.email = req.body.email;
         walker.telephone = req.body.telephone;
         walker.address = req.body.address;
-	    var imageName = walker._id + ".jpg";
-
-       walker.profileImage = SERVER_URL + imageName;
-	   base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
+        if (req.body.profileImage){
+            var imageName = walker._id + ".jpg";
+            walker.profileImage = SERVER_URL + imageName;
+            base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
+        }	    
        walker.city = req.body.city;
        // walker.about = req.body.about;
         walker.displayName = req.body.firstName + " " + req.body.lastName;

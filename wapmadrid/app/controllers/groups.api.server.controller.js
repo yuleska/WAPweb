@@ -65,25 +65,27 @@ exports.update = function(req, res) {
                 ret.error_message = err;
                 return res.status(200).jsonp(ret);  
             } else {
-                var imageName = group._id + ".jpg";
-                group.image = SERVER_URL + imageName;
-                base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
+                if (req.body.profileImage){
+                    var imageName = group._id + ".jpg";
+                    group.image = SERVER_URL + imageName;
+                    base64_decode(req.body.profileImage, SERVER_PATH + imageName); 
+                }
                 group.name = req.body.name;
                 group.schedule = req.body.schedule;
                 group.level = req.body.level;
                 group.route = req.body.route;
                 group.save(function(err) {
-                if (err) {
-                    var ret = {};
-                    ret.error = 5;
-                    ret.error_message = err;
-                    return res.status(200).jsonp(ret);  
-                } else {                    
-                    var ret = {};
-                    ret.error = 0;
-                    return res.status(200).jsonp(ret);  
-                }
-            });
+                    if (err) {
+                        var ret = {};
+                        ret.error = 5;
+                        ret.error_message = err;
+                        return res.status(200).jsonp(ret);  
+                    } else {                    
+                        var ret = {};
+                        ret.error = 0;
+                        return res.status(200).jsonp(ret);  
+                    }
+                });
             }
         });           
     });
