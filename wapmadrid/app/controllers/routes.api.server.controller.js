@@ -74,7 +74,7 @@ exports.deleteRoute = function(req, res) {
         if (checkCredentials.error != "0")
             return res.status(200).jsonp(checkCredentials);
         Route.findById(req.body.routeID, function(err, route){
-            if (route.owner.equals(walker._id)){
+            if (route.owner.equals(walker._id) || walker.roles == 'admin'){
                 var found = false;
                 var i = 0;
                 route.remove();
