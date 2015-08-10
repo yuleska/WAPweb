@@ -16,8 +16,8 @@
     utils = require('./utils.js');
 
 
-var SERVER_PATH = '/var/www/ftp/images/profiles/';
-var SERVER_URL = 'http://www.proyectowap.tk/images/profiles/';
+var SERVER_PATH = '/var/www/vhosts/madridsalud.es/wapmadrid.madridsalud.es/images/profiles/';
+var SERVER_URL = 'http://wapmadrid.madridsalud.es/images/profiles/';
 
 /**
  * Register Walker

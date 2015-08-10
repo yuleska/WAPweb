@@ -15,8 +15,10 @@
     fs = require('fs'),
     utils = require('./utils.js');
 
-var SERVER_PATH = '/var/www/ftp/images/profiles/';
-var SERVER_URL = 'http://www.proyectowap.tk/images/profiles/';
+
+
+var SERVER_PATH = '/var/www/vhosts/madridsalud.es/wapmadrid.madridsalud.es/images/profiles/';
+var SERVER_URL = 'http://wapmadrid.madridsalud.es/images/profiles/';
 /**
  * Register Walker
  */
@@ -30,7 +32,7 @@ exports.register = function(req, res) {
             return res.status(200).jsonp(ret);  
         }
     	var walker = new Walker(req.body);	
-        walker.profileImage = "http://www.proyectowap.tk/images/profiles/profile_default.png";
+        walker.profileImage = "http://www.wapmadrid.madridsalud.es/images/profiles/profile_default.png";
         walker.about = "Usuario de WAPMADRID";
         walker.city = "Madrid";
         walker.telephone = "";

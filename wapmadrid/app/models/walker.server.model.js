@@ -27,7 +27,7 @@ var validateLocalStrategyPassword = function(password) {
 var WalkerSchema = new Schema({
     profileImage:{
         type: String,
-        default: 'http://www.proyectowap.tk/images/profiles/profile_default.png'
+        default: 'http://www.wapmadrid.madridsalud.es/images/profiles/profile_default.png'
     }
     ,firstName: {
         type: String,

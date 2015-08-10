@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# Note runlevel 2345, 86 is the Start order and 85 is the Stop order
+#
+# chkconfig: 2345 86 85
+# description: Description of the Service
+#
+# Below is the source function library, leave it be
+. /etc/init.d/functions
+
+# result of whereis forever or whereis node
+export PATH=$PATH:/usr/local/bin  
+# result of whereis node_modules
+export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+
+
+start(){  
+        forever start /var/www/vhosts/madridsalud.es/wapmadrid.madridsalud.es/wapmadrid/server.js >> /var/log/wapmadrid.log	
+}
+
+stop(){  
+        forever stop /var/www/vhosts/madridsalud.es/wapmadrid.madridsalud.es/wapmadrid/server.js >> /var/log/wapmadrid.log	
+}
+
+restart(){  
+        forever restart /var/www/vhosts/madridsalud.es/wapmadrid.madridsalud.es/wapmadrid/server.js >> /var/log/wapmadrid.log	
+}
+
+case "$1" in  
+        start)
+                echo "Start service WAPMadrid"
+                start
+                ;;
+        stop)
+                echo "Stop service WAPMadrid"
+                stop
+                ;;
+        restart)
+                echo "Restart service WAPMadrid"
+                restart
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|restart}"
+                exit 1
+                ;;
+esac  

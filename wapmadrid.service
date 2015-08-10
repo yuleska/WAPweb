@@ -1,12 +1,12 @@
 [Service]
-WorkingDirectory=/home/API/WAPweb/wapmadrid
-ExecStart=nodejs server.js 
+WorkingDirectory=/var/www/vhosts/madridsalud.es/wapmadrid.madridsalud.es/wapmadrid
+ExecStart=node server.js 
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=wapmadrid
-User=ubuntu
-Group=ubuntu
+User=root
+Group=root
 Environment='NODE_ENV=production'
  
 [Install]
